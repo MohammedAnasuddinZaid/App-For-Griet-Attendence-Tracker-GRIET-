@@ -29,7 +29,7 @@ const TIME = {
   P4: { start: '12:00', end: '12:50' },
   P5: { start: '12:55', end: '13:45' },
   P6: { start: '14:30', end: '15:20' },
-  P7: { start: '15:20', end: '16:10' },
+  P7: { start: '15:25', end: '16:15' },
 } as const
 
 const T: Record<number, { start: string; end: string }> = {
@@ -97,7 +97,7 @@ function makeWeek(
     const periods: { p: Period5; sub: string; code: string; fac: string }[] = []
     for (let p = 1; p <= 5; p++) {
       const period = p as Period5
-      const base = cores[(d - 1 + p - 1) % 5]
+      const base = cores[(d - 1 + p - 1) % 5]!
       const rep = auxs[day]?.[period]
       periods.push({ p: period, sub: rep?.sub ?? base.sub, code: rep?.code ?? base.code, fac: rep?.fac ?? base.fac })
     }
@@ -237,7 +237,7 @@ function yearIISemIUnitAimlDs(room: string): SlotDraft[] {
   )
 }
 
-function yearIISemIICSECSBS(): SlotDraft[] {
+function yearIISemICSECSBS(): SlotDraft[] {
   return makeWeek(
     'CSE-CSBS-402',
     [
@@ -594,7 +594,7 @@ function yearIIISemIUnitAimlDs(room: string): SlotDraft[] {
   )
 }
 
-function yearIIISemIICSECSBS(): SlotDraft[] {
+function yearIIISemICSECSBS(): SlotDraft[] {
   return makeWeek(
     'CSE-CSBS-402',
     [
@@ -948,7 +948,7 @@ function yearIVSemIUnitAimlDs(room: string): SlotDraft[] {
   )
 }
 
-function yearIVSemIICSECSBS(): SlotDraft[] {
+function yearIVSemICSECSBS(): SlotDraft[] {
   return makeWeek(
     'CSE-CSBS-402',
     [
@@ -1158,7 +1158,7 @@ function timetableForKey(year: YearKeys, semester: SemesterKeys, branch: string)
       switch (br) {
         case 'CSE': return yearIISemICSE()
         case 'CSE-AIML': return yearIISemIUnitAimlDs('CSE-AIML-401')
-        case 'CSE-CSBS': return yearIISemIICSECSBS()
+        case 'CSE-CSBS': return yearIISemICSECSBS()
         case 'CSE-DS': return yearIISemIUnitAimlDs('CSE-DS-403')
         case 'IT': return yearIISemIIT()
         case 'ECE': return yearIISemIECE()
@@ -1186,7 +1186,7 @@ function timetableForKey(year: YearKeys, semester: SemesterKeys, branch: string)
       switch (br) {
         case 'CSE': return yearIIISemICSE()
         case 'CSE-AIML': return yearIIISemIUnitAimlDs('CSE-AIML-401')
-        case 'CSE-CSBS': return yearIIISemIICSECSBS()
+        case 'CSE-CSBS': return yearIIISemICSECSBS()
         case 'CSE-DS': return yearIIISemIUnitAimlDs('CSE-DS-403')
         case 'IT': return yearIIISemIIT()
         case 'ECE': return yearIIISemIECE()
@@ -1213,7 +1213,7 @@ function timetableForKey(year: YearKeys, semester: SemesterKeys, branch: string)
     switch (br) {
       case 'CSE': return yearIVSemICSE()
       case 'CSE-AIML': return yearIVSemIUnitAimlDs('CSE-AIML-401')
-      case 'CSE-CSBS': return yearIVSemIICSECSBS()
+      case 'CSE-CSBS': return yearIVSemICSECSBS()
       case 'CSE-DS': return yearIVSemIUnitAimlDs('CSE-DS-403')
       case 'IT': return yearIVSemIIT()
       case 'ECE': return yearIVSemIECE()
