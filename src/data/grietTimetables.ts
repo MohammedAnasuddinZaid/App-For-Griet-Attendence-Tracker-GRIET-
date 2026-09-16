@@ -73,2130 +73,1052 @@ function buildWeek(
   return out
 }
 
+interface Sub {
+  sub: string
+  code: string
+  fac: string
+}
+
+type Period5 = 1 | 2 | 3 | 4 | 5
+
+function makeWeek(
+  room: string,
+  cores: [Sub, Sub, Sub, Sub, Sub],
+  labs: Partial<Record<Period5, Sub>>,
+  auxs: Partial<Record<Period5, Partial<Record<Period5, Sub>>>> = {}
+): SlotDraft[] {
+  const defs: Array<{
+    day: number
+    periods: { p: Period5; sub: string; code: string; fac: string }[]
+    lab?: { sub: string; code: string; fac: string }
+  }> = []
+  for (let d = 1; d <= 5; d++) {
+    const day = d as Period5
+    const periods: { p: Period5; sub: string; code: string; fac: string }[] = []
+    for (let p = 1; p <= 5; p++) {
+      const period = p as Period5
+      const base = cores[(d - 1 + p - 1) % 5]
+      const rep = auxs[day]?.[period]
+      periods.push({ p: period, sub: rep?.sub ?? base.sub, code: rep?.code ?? base.code, fac: rep?.fac ?? base.fac })
+    }
+    const lab = labs[day]
+    defs.push(lab ? { day, periods, lab } : { day, periods })
+  }
+  return buildWeek(room, defs)
+}
+
 // ============================================================================
 //  YEAR I — COMMON CURRICULUM FOR ALL BRANCHES (JNTUH R25)
 // ============================================================================
 
 function yearISemI(): SlotDraft[] {
   return buildWeek('A-201', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Engineering Mathematics – I', code: 'MA101', fac: 'Dr. K. Sridevi' },
-      { p: 2, sub: 'Engineering Chemistry', code: 'CH101', fac: 'Dr. P. Latha' },
-      { p: 3, sub: 'Programming for Problem Solving', code: 'CS101', fac: 'Mrs. B. Swathi' },
-      { p: 4, sub: 'English – I', code: 'HS101', fac: 'Mr. V. Ravi Kumar' },
-      { p: 5, sub: 'Engineering Physics', code: 'PH101', fac: 'Dr. M. Sunitha' },
-    ], lab: { sub: 'Engineering Chemistry Lab', code: 'CH101L', fac: 'Dr. P. Latha' } },
-    { day: 2, periods: [
-      { p: 1, sub: 'Programming for Problem Solving', code: 'CS101', fac: 'Mrs. B. Swathi' },
-      { p: 2, sub: 'Engineering Mathematics – I', code: 'MA101', fac: 'Dr. K. Sridevi' },
-      { p: 3, sub: 'English – I', code: 'HS101', fac: 'Mr. V. Ravi Kumar' },
-      { p: 4, sub: 'Engineering Chemistry', code: 'CH101', fac: 'Dr. P. Latha' },
-      { p: 5, sub: 'Engineering Physics', code: 'PH101', fac: 'Dr. M. Sunitha' },
-    ] },
-    { day: 3, periods: [
-      { p: 1, sub: 'Engineering Physics', code: 'PH101', fac: 'Dr. M. Sunitha' },
-      { p: 2, sub: 'English – I', code: 'HS101', fac: 'Mr. V. Ravi Kumar' },
-      { p: 3, sub: 'Engineering Mathematics – I', code: 'MA101', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'Programming for Problem Solving', code: 'CS101', fac: 'Mrs. B. Swathi' },
-      { p: 5, sub: 'Engineering Chemistry', code: 'CH101', fac: 'Dr. P. Latha' },
-    ], lab: { sub: 'Programming Lab', code: 'CS101L', fac: 'Mrs. B. Swathi' } },
-    { day: 4, periods: [
-      { p: 1, sub: 'Engineering Chemistry', code: 'CH101', fac: 'Dr. P. Latha' },
-      { p: 2, sub: 'Engineering Physics', code: 'PH101', fac: 'Dr. M. Sunitha' },
-      { p: 3, sub: 'English – I', code: 'HS101', fac: 'Mr. V. Ravi Kumar' },
-      { p: 4, sub: 'Engineering Mathematics – I', code: 'MA101', fac: 'Dr. K. Sridevi' },
-      { p: 5, sub: 'Programming for Problem Solving', code: 'CS101', fac: 'Mrs. B. Swathi' },
-    ], lab: { sub: 'Engineering Physics Lab', code: 'PH101L', fac: 'Dr. M. Sunitha' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Engineering Mathematics – I', code: 'MA101', fac: 'Dr. K. Sridevi' },
-      { p: 2, sub: 'Engineering Chemistry', code: 'CH101', fac: 'Dr. P. Latha' },
-      { p: 3, sub: 'Engineering Physics', code: 'PH101', fac: 'Dr. M. Sunitha' },
-      { p: 4, sub: 'Programming for Problem Solving', code: 'CS101', fac: 'Mrs. B. Swathi' },
-      { p: 5, sub: 'English – I', code: 'HS101', fac: 'Mr. V. Ravi Kumar' },
-    ] },
+    {
+      day: 1,
+      periods: [
+        { p: 1, sub: 'Matrices and Calculus', code: 'MA101BS', fac: 'Dr. K. Sridevi' },
+        { p: 2, sub: 'Engineering Chemistry', code: 'CH102BS', fac: 'Dr. P. Latha' },
+        { p: 3, sub: 'Programming for Problem Solving', code: 'CS103ES', fac: 'Mrs. B. Swathi' },
+        { p: 4, sub: 'Engineering Drawing & Computer Aided Drafting', code: 'ME105ES', fac: 'Mr. K. Suresh' },
+        { p: 5, sub: 'Matrices and Calculus', code: 'MA101BS', fac: 'Dr. K. Sridevi' },
+      ],
+      lab: { sub: 'Engineering Chemistry Lab', code: 'CH109BS', fac: 'Dr. P. Latha' },
+    },
+    {
+      day: 2,
+      periods: [
+        { p: 1, sub: 'Engineering Chemistry', code: 'CH102BS', fac: 'Dr. P. Latha' },
+        { p: 2, sub: 'Programming for Problem Solving', code: 'CS103ES', fac: 'Mrs. B. Swathi' },
+        { p: 3, sub: 'Engineering Drawing & Computer Aided Drafting', code: 'ME105ES', fac: 'Mr. K. Suresh' },
+        { p: 4, sub: 'Matrices and Calculus', code: 'MA101BS', fac: 'Dr. K. Sridevi' },
+        { p: 5, sub: 'Programming for Problem Solving', code: 'CS103ES', fac: 'Mrs. B. Swathi' },
+      ],
+    },
+    {
+      day: 3,
+      periods: [
+        { p: 1, sub: 'Programming for Problem Solving', code: 'CS103ES', fac: 'Mrs. B. Swathi' },
+        { p: 2, sub: 'Engineering Drawing & Computer Aided Drafting', code: 'ME105ES', fac: 'Mr. K. Suresh' },
+        { p: 3, sub: 'Matrices and Calculus', code: 'MA101BS', fac: 'Dr. K. Sridevi' },
+        { p: 4, sub: 'Engineering Chemistry', code: 'CH102BS', fac: 'Dr. P. Latha' },
+        { p: 5, sub: 'Engineering Drawing & Computer Aided Drafting', code: 'ME105ES', fac: 'Mr. K. Suresh' },
+      ],
+      lab: { sub: 'Programming for Problem Solving Lab', code: 'CS107ES', fac: 'Mrs. B. Swathi' },
+    },
+    {
+      day: 4,
+      periods: [
+        { p: 1, sub: 'Engineering Drawing & Computer Aided Drafting', code: 'ME105ES', fac: 'Mr. K. Suresh' },
+        { p: 2, sub: 'Matrices and Calculus', code: 'MA101BS', fac: 'Dr. K. Sridevi' },
+        { p: 3, sub: 'Engineering Chemistry', code: 'CH102BS', fac: 'Dr. P. Latha' },
+        { p: 4, sub: 'Programming for Problem Solving', code: 'CS103ES', fac: 'Mrs. B. Swathi' },
+        { p: 5, sub: 'IT Workshop', code: 'CS109ES', fac: 'Mrs. B. Swathi' },
+      ],
+      lab: { sub: 'English Language & Communication Skills Lab', code: 'EN108HS', fac: 'Mr. V. Ravi Kumar' },
+    },
+    {
+      day: 5,
+      periods: [
+        { p: 1, sub: 'Matrices and Calculus', code: 'MA101BS', fac: 'Dr. K. Sridevi' },
+        { p: 2, sub: 'Engineering Chemistry', code: 'CH102BS', fac: 'Dr. P. Latha' },
+        { p: 3, sub: 'Programming for Problem Solving', code: 'CS103ES', fac: 'Mrs. B. Swathi' },
+        { p: 4, sub: 'Engineering Drawing & Computer Aided Drafting', code: 'ME105ES', fac: 'Mr. K. Suresh' },
+        { p: 5, sub: 'Matrices and Calculus', code: 'MA101BS', fac: 'Dr. K. Sridevi' },
+      ],
+      lab: { sub: 'IT Workshop', code: 'CS109ES', fac: 'Mrs. B. Swathi' },
+    },
   ])
 }
 
 function yearISemII(): SlotDraft[] {
-  return buildWeek('A-201', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Engineering Mathematics – II', code: 'MA102', fac: 'Dr. K. Sridevi' },
-      { p: 2, sub: 'Professional Communication – I', code: 'HS102', fac: 'Mr. V. Ravi Kumar' },
-      { p: 3, sub: 'Basic Electrical & Electronics Engineering', code: 'EE101', fac: 'Dr. S. Ranganath' },
-      { p: 4, sub: 'Workshop Practice', code: 'ME101', fac: 'Mr. K. Suresh' },
-      { p: 5, sub: 'Engineering Drawing', code: 'ME102', fac: 'Mr. K. Suresh' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Basic Electrical & Electronics Engineering', code: 'EE101', fac: 'Dr. S. Ranganath' },
-      { p: 2, sub: 'Engineering Mathematics – II', code: 'MA102', fac: 'Dr. K. Sridevi' },
-      { p: 3, sub: 'Workshop Practice', code: 'ME101', fac: 'Mr. K. Suresh' },
-      { p: 4, sub: 'Engineering Drawing', code: 'ME102', fac: 'Mr. K. Suresh' },
-      { p: 5, sub: 'Professional Communication – I', code: 'HS102', fac: 'Mr. V. Ravi Kumar' },
-    ], lab: { sub: 'Workshop Practice Lab', code: 'ME101L', fac: 'Mr. K. Suresh' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Professional Communication – I', code: 'HS102', fac: 'Mr. V. Ravi Kumar' },
-      { p: 2, sub: 'Engineering Drawing', code: 'ME102', fac: 'Mr. K. Suresh' },
-      { p: 3, sub: 'Engineering Mathematics – II', code: 'MA102', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'Basic Electrical & Electronics Engineering', code: 'EE101', fac: 'Dr. S. Ranganath' },
-      { p: 5, sub: 'Workshop Practice', code: 'ME101', fac: 'Mr. K. Suresh' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Engineering Drawing', code: 'ME102', fac: 'Mr. K. Suresh' },
-      { p: 2, sub: 'Workshop Practice', code: 'ME101', fac: 'Mr. K. Suresh' },
-      { p: 3, sub: 'Professional Communication – I', code: 'HS102', fac: 'Mr. V. Ravi Kumar' },
-      { p: 4, sub: 'Engineering Mathematics – II', code: 'MA102', fac: 'Dr. K. Sridevi' },
-      { p: 5, sub: 'Basic Electrical & Electronics Engineering', code: 'EE101', fac: 'Dr. S. Ranganath' },
-    ], lab: { sub: 'Engineering Drawing Lab', code: 'ME102L', fac: 'Mr. K. Suresh' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Engineering Mathematics – II', code: 'MA102', fac: 'Dr. K. Sridevi' },
-      { p: 2, sub: 'Basic Electrical & Electronics Engineering', code: 'EE101', fac: 'Dr. S. Ranganath' },
-      { p: 3, sub: 'Professional Communication – I', code: 'HS102', fac: 'Mr. V. Ravi Kumar' },
-      { p: 4, sub: 'Workshop Practice', code: 'ME101', fac: 'Mr. K. Suresh' },
-      { p: 5, sub: 'Engineering Drawing', code: 'ME102', fac: 'Mr. K. Suresh' },
-    ] },
-  ])
+  return makeWeek(
+    'A-201',
+    [
+      { sub: 'Ordinary Differential Equations & Vector Calculus', code: 'MA201BS', fac: 'Dr. K. Sridevi' },
+      { sub: 'Advanced Engineering Physics', code: 'PH202BS', fac: 'Dr. M. Sunitha' },
+      { sub: 'Engineering Drawing & Computer Aided Drafting', code: 'ME203ES', fac: 'Mr. K. Suresh' },
+      { sub: 'Basic Electrical Engineering', code: 'EE204ES', fac: 'Dr. S. Ranganath' },
+      { sub: 'Data Structures', code: 'CS205ES', fac: 'Mrs. B. Swathi' },
+    ],
+    {
+      1: { sub: 'Advanced Engineering Physics Lab', code: 'PH206BS', fac: 'Dr. M. Sunitha' },
+      2: { sub: 'Basic Electrical Engineering Lab', code: 'EE209ES', fac: 'Dr. S. Ranganath' },
+      3: { sub: 'Data Structures Lab', code: 'CS207ES', fac: 'Mrs. B. Swathi' },
+      4: { sub: 'Python Programming Lab', code: 'CS208ES', fac: 'Mrs. B. Swathi' },
+      5: { sub: 'IT Workshop', code: 'CS210ES', fac: 'Mrs. B. Swathi' },
+    }
+  )
 }
 
 // ============================================================================
-//  YEAR II — BRANCH-SPECIFIC SEMESTER I TIMETABLES
+//  YEAR II — SEMESTER I (JNTUH R25)
 // ============================================================================
 
 function yearIISemICSE(): SlotDraft[] {
-  return buildWeek('CSE-301', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Data Structures', code: 'CS201', fac: 'Dr. A. Ramesh' },
-      { p: 2, sub: 'Digital Logic Design', code: 'CS202', fac: 'Mrs. S. Priya' },
-      { p: 3, sub: 'Discrete Mathematics', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'OOP through Java', code: 'CS203', fac: 'Mr. T. Vijay' },
-      { p: 5, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'OOP through Java', code: 'CS203', fac: 'Mr. T. Vijay' },
-      { p: 2, sub: 'Data Structures', code: 'CS201', fac: 'Dr. A. Ramesh' },
-      { p: 3, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 4, sub: 'Discrete Mathematics', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 5, sub: 'Digital Logic Design', code: 'CS202', fac: 'Mrs. S. Priya' },
-    ], lab: { sub: 'Data Structures Lab', code: 'CS201L', fac: 'Dr. A. Ramesh' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Digital Logic Design', code: 'CS202', fac: 'Mrs. S. Priya' },
-      { p: 2, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 3, sub: 'Data Structures', code: 'CS201', fac: 'Dr. A. Ramesh' },
-      { p: 4, sub: 'OOP through Java', code: 'CS203', fac: 'Mr. T. Vijay' },
-      { p: 5, sub: 'Discrete Mathematics', code: 'MA201', fac: 'Dr. K. Sridevi' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Discrete Mathematics', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 2, sub: 'OOP through Java', code: 'CS203', fac: 'Mr. T. Vijay' },
-      { p: 3, sub: 'Digital Logic Design', code: 'CS202', fac: 'Mrs. S. Priya' },
-      { p: 4, sub: 'Data Structures', code: 'CS201', fac: 'Dr. A. Ramesh' },
-      { p: 5, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-    ], lab: { sub: 'Digital Logic Lab', code: 'CS202L', fac: 'Mrs. S. Priya' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 2, sub: 'Discrete Mathematics', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 3, sub: 'OOP through Java', code: 'CS203', fac: 'Mr. T. Vijay' },
-      { p: 4, sub: 'Digital Logic Design', code: 'CS202', fac: 'Mrs. S. Priya' },
-      { p: 5, sub: 'Data Structures', code: 'CS201', fac: 'Dr. A. Ramesh' },
-    ] },
-  ])
+  return makeWeek(
+    'CSE-301',
+    [
+      { sub: 'Computer-Oriented Statistical Methods', code: 'MA301PC', fac: 'Dr. K. Sridevi' },
+      { sub: 'Computer Organization & Architecture', code: 'CS302PC', fac: 'Dr. A. Ramesh' },
+      { sub: 'Object-Oriented Programming through Java', code: 'CS303PC', fac: 'Mr. T. Vijay' },
+      { sub: 'Operating Systems', code: 'CS304PC', fac: 'Dr. A. Ramesh' },
+      { sub: 'Database Management Systems', code: 'CS305PC', fac: 'Mrs. S. Priya' },
+    ],
+    {
+      1: { sub: 'OOP through Java Lab', code: 'CS307PC', fac: 'Mr. T. Vijay' },
+      2: { sub: 'Software Engineering Lab', code: 'CS308PC', fac: 'Mrs. S. Priya' },
+      3: { sub: 'DBMS Lab', code: 'CS309PC', fac: 'Dr. A. Ramesh' },
+      4: { sub: 'Computational Mathematics Lab', code: 'MA306PC', fac: 'Dr. K. Sridevi' },
+      5: { sub: 'Node JS/React JS/Django', code: 'CS310SD', fac: 'Dr. Hema Latha' },
+    },
+    {
+      2: { 5: { sub: 'Environmental Science', code: 'VA300ES', fac: 'Mrs. N. Lavanya' } },
+    }
+  )
 }
 
-function yearIISemICSEAIML(): SlotDraft[] {
-  return buildWeek('CSE-AIML-401', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Data Structures', code: 'CS201', fac: 'Dr. A. Ramesh' },
-      { p: 2, sub: 'Digital Logic Design', code: 'CS202', fac: 'Mrs. S. Priya' },
-      { p: 3, sub: 'Discrete Mathematics', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'OOP through Java', code: 'CS203', fac: 'Mr. T. Vijay' },
-      { p: 5, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'OOP through Java', code: 'CS203', fac: 'Mr. T. Vijay' },
-      { p: 2, sub: 'Data Structures', code: 'CS201', fac: 'Dr. A. Ramesh' },
-      { p: 3, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 4, sub: 'Discrete Mathematics', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 5, sub: 'Digital Logic Design', code: 'CS202', fac: 'Mrs. S. Priya' },
-    ], lab: { sub: 'Data Structures Lab', code: 'CS201L', fac: 'Dr. A. Ramesh' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Digital Logic Design', code: 'CS202', fac: 'Mrs. S. Priya' },
-      { p: 2, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 3, sub: 'Data Structures', code: 'CS201', fac: 'Dr. A. Ramesh' },
-      { p: 4, sub: 'OOP through Java', code: 'CS203', fac: 'Mr. T. Vijay' },
-      { p: 5, sub: 'Discrete Mathematics', code: 'MA201', fac: 'Dr. K. Sridevi' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Discrete Mathematics', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 2, sub: 'OOP through Java', code: 'CS203', fac: 'Mr. T. Vijay' },
-      { p: 3, sub: 'Digital Logic Design', code: 'CS202', fac: 'Mrs. S. Priya' },
-      { p: 4, sub: 'Data Structures', code: 'CS201', fac: 'Dr. A. Ramesh' },
-      { p: 5, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-    ], lab: { sub: 'Digital Logic Lab', code: 'CS202L', fac: 'Mrs. S. Priya' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 2, sub: 'Discrete Mathematics', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 3, sub: 'OOP through Java', code: 'CS203', fac: 'Mr. T. Vijay' },
-      { p: 4, sub: 'Digital Logic Design', code: 'CS202', fac: 'Mrs. S. Priya' },
-      { p: 5, sub: 'Data Structures', code: 'CS201', fac: 'Dr. A. Ramesh' },
-    ] },
-  ])
+function yearIISemIUnitAimlDs(room: string): SlotDraft[] {
+  return makeWeek(
+    room,
+    [
+      { sub: 'Mathematical & Statistical Foundations', code: 'MA401BS', fac: 'Dr. K. Sridevi' },
+      { sub: 'Computer Organization & Architecture', code: 'CS302PC', fac: 'Dr. A. Ramesh' },
+      { sub: 'Object-Oriented Programming through Java', code: 'CS303PC', fac: 'Mr. T. Vijay' },
+      { sub: 'Software Engineering', code: 'CS304PC', fac: 'Mrs. S. Priya' },
+      { sub: 'Database Management System', code: 'CS305PC', fac: 'Dr. A. Ramesh' },
+    ],
+    {
+      1: { sub: 'OOP through Java Lab', code: 'CS307PC', fac: 'Mr. T. Vijay' },
+      2: { sub: 'Software Engineering Lab', code: 'CS308PC', fac: 'Mrs. S. Priya' },
+      3: { sub: 'DBMS Lab', code: 'CS309PC', fac: 'Dr. A. Ramesh' },
+      4: { sub: 'Computational Mathematics Lab', code: 'MA306PC', fac: 'Dr. K. Sridevi' },
+      5: { sub: 'Node JS/React JS/Django', code: 'CS310SD', fac: 'Dr. Hema Latha' },
+    }
+  )
 }
 
-function yearIISemICSECSBS(): SlotDraft[] {
-  return buildWeek('CSE-CSBS-402', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Data Structures', code: 'CS201', fac: 'Dr. A. Ramesh' },
-      { p: 2, sub: 'Digital Logic Design', code: 'CS202', fac: 'Mrs. S. Priya' },
-      { p: 3, sub: 'Discrete Mathematics', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'OOP through Java', code: 'CS203', fac: 'Mr. T. Vijay' },
-      { p: 5, sub: 'Business Economics', code: 'HS205', fac: 'Mrs. N. Lavanya' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'OOP through Java', code: 'CS203', fac: 'Mr. T. Vijay' },
-      { p: 2, sub: 'Data Structures', code: 'CS201', fac: 'Dr. A. Ramesh' },
-      { p: 3, sub: 'Business Economics', code: 'HS205', fac: 'Mrs. N. Lavanya' },
-      { p: 4, sub: 'Discrete Mathematics', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 5, sub: 'Digital Logic Design', code: 'CS202', fac: 'Mrs. S. Priya' },
-    ], lab: { sub: 'Data Structures Lab', code: 'CS201L', fac: 'Dr. A. Ramesh' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Digital Logic Design', code: 'CS202', fac: 'Mrs. S. Priya' },
-      { p: 2, sub: 'Business Economics', code: 'HS205', fac: 'Mrs. N. Lavanya' },
-      { p: 3, sub: 'Data Structures', code: 'CS201', fac: 'Dr. A. Ramesh' },
-      { p: 4, sub: 'OOP through Java', code: 'CS203', fac: 'Mr. T. Vijay' },
-      { p: 5, sub: 'Discrete Mathematics', code: 'MA201', fac: 'Dr. K. Sridevi' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Discrete Mathematics', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 2, sub: 'OOP through Java', code: 'CS203', fac: 'Mr. T. Vijay' },
-      { p: 3, sub: 'Digital Logic Design', code: 'CS202', fac: 'Mrs. S. Priya' },
-      { p: 4, sub: 'Data Structures', code: 'CS201', fac: 'Dr. A. Ramesh' },
-      { p: 5, sub: 'Business Economics', code: 'HS205', fac: 'Mrs. N. Lavanya' },
-    ], lab: { sub: 'Digital Logic Lab', code: 'CS202L', fac: 'Mrs. S. Priya' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Business Economics', code: 'HS205', fac: 'Mrs. N. Lavanya' },
-      { p: 2, sub: 'Discrete Mathematics', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 3, sub: 'OOP through Java', code: 'CS203', fac: 'Mr. T. Vijay' },
-      { p: 4, sub: 'Digital Logic Design', code: 'CS202', fac: 'Mrs. S. Priya' },
-      { p: 5, sub: 'Data Structures', code: 'CS201', fac: 'Dr. A. Ramesh' },
-    ] },
-  ])
-}
-
-function yearIISemICSEDS(): SlotDraft[] {
-  return buildWeek('CSE-DS-403', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Data Structures', code: 'CS201', fac: 'Dr. A. Ramesh' },
-      { p: 2, sub: 'Digital Logic Design', code: 'CS202', fac: 'Mrs. S. Priya' },
-      { p: 3, sub: 'Probability & Statistics', code: 'MA202', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'OOP through Java', code: 'CS203', fac: 'Mr. T. Vijay' },
-      { p: 5, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'OOP through Java', code: 'CS203', fac: 'Mr. T. Vijay' },
-      { p: 2, sub: 'Data Structures', code: 'CS201', fac: 'Dr. A. Ramesh' },
-      { p: 3, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 4, sub: 'Probability & Statistics', code: 'MA202', fac: 'Dr. K. Sridevi' },
-      { p: 5, sub: 'Digital Logic Design', code: 'CS202', fac: 'Mrs. S. Priya' },
-    ], lab: { sub: 'Data Structures Lab', code: 'CS201L', fac: 'Dr. A. Ramesh' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Digital Logic Design', code: 'CS202', fac: 'Mrs. S. Priya' },
-      { p: 2, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 3, sub: 'Data Structures', code: 'CS201', fac: 'Dr. A. Ramesh' },
-      { p: 4, sub: 'OOP through Java', code: 'CS203', fac: 'Mr. T. Vijay' },
-      { p: 5, sub: 'Probability & Statistics', code: 'MA202', fac: 'Dr. K. Sridevi' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Probability & Statistics', code: 'MA202', fac: 'Dr. K. Sridevi' },
-      { p: 2, sub: 'OOP through Java', code: 'CS203', fac: 'Mr. T. Vijay' },
-      { p: 3, sub: 'Digital Logic Design', code: 'CS202', fac: 'Mrs. S. Priya' },
-      { p: 4, sub: 'Data Structures', code: 'CS201', fac: 'Dr. A. Ramesh' },
-      { p: 5, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-    ], lab: { sub: 'Digital Logic Lab', code: 'CS202L', fac: 'Mrs. S. Priya' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 2, sub: 'Probability & Statistics', code: 'MA202', fac: 'Dr. K. Sridevi' },
-      { p: 3, sub: 'OOP through Java', code: 'CS203', fac: 'Mr. T. Vijay' },
-      { p: 4, sub: 'Digital Logic Design', code: 'CS202', fac: 'Mrs. S. Priya' },
-      { p: 5, sub: 'Data Structures', code: 'CS201', fac: 'Dr. A. Ramesh' },
-    ] },
-  ])
-}
-
-function yearIISemIIT(): SlotDraft[] {
-  return buildWeek('IT-301', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Data Structures', code: 'CS201', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Digital Logic Design', code: 'CS202', fac: 'Mrs. S. Priya' },
-      { p: 3, sub: 'Discrete Mathematics', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'OOP through Java', code: 'CS203', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'OOP through Java', code: 'CS203', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Data Structures', code: 'CS201', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 4, sub: 'Discrete Mathematics', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 5, sub: 'Digital Logic Design', code: 'CS202', fac: 'Mrs. S. Priya' },
-    ], lab: { sub: 'Data Structures Lab', code: 'CS201L', fac: 'Dr. Hema Latha' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Digital Logic Design', code: 'CS202', fac: 'Mrs. S. Priya' },
-      { p: 2, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 3, sub: 'Data Structures', code: 'CS201', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'OOP through Java', code: 'CS203', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Discrete Mathematics', code: 'MA201', fac: 'Dr. K. Sridevi' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Discrete Mathematics', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 2, sub: 'OOP through Java', code: 'CS203', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'Digital Logic Design', code: 'CS202', fac: 'Mrs. S. Priya' },
-      { p: 4, sub: 'Data Structures', code: 'CS201', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-    ], lab: { sub: 'Digital Logic Lab', code: 'CS202L', fac: 'Mrs. S. Priya' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 2, sub: 'Discrete Mathematics', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 3, sub: 'OOP through Java', code: 'CS203', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'Digital Logic Design', code: 'CS202', fac: 'Mrs. S. Priya' },
-      { p: 5, sub: 'Data Structures', code: 'CS201', fac: 'Dr. Hema Latha' },
-    ] },
-  ])
+function yearIISemIICSECSBS(): SlotDraft[] {
+  return makeWeek(
+    'CSE-CSBS-402',
+    [
+      { sub: 'Mathematical & Statistical Foundations', code: 'MA301BS', fac: 'Dr. K. Sridevi' },
+      { sub: 'Computer Organization', code: 'CB302PC', fac: 'Dr. A. Ramesh' },
+      { sub: 'Business Statistics Using R', code: 'CB303PC', fac: 'Dr. Hema Latha' },
+      { sub: 'Software Engineering', code: 'CS304PC', fac: 'Mrs. S. Priya' },
+      { sub: 'Database Management Systems', code: 'CS305PC', fac: 'Dr. A. Ramesh' },
+    ],
+    {
+      1: { sub: 'DBMS Lab', code: 'CS307PC', fac: 'Dr. A. Ramesh' },
+      2: { sub: 'Business Statistics Using R Lab', code: 'CS308PC', fac: 'Dr. Hema Latha' },
+      3: { sub: 'Algorithms Lab', code: 'CS309PC', fac: 'Dr. A. Ramesh' },
+      4: { sub: 'Computational Mathematics Lab', code: 'MA306PC', fac: 'Dr. K. Sridevi' },
+      5: { sub: 'Data Visualization', code: 'CB310SD', fac: 'Dr. Hema Latha' },
+    }
+  )
 }
 
 function yearIISemIECE(): SlotDraft[] {
-  return buildWeek('ECE-201', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Network Analysis', code: 'EC201', fac: 'Dr. G. Narsimha' },
-      { p: 2, sub: 'Analog Electronics', code: 'EC202', fac: 'Mrs. R. Sujatha' },
-      { p: 3, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-      { p: 5, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Analog Electronics', code: 'EC202', fac: 'Mrs. R. Sujatha' },
-      { p: 2, sub: 'Network Analysis', code: 'EC201', fac: 'Dr. G. Narsimha' },
-      { p: 3, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 4, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 5, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-    ], lab: { sub: 'Analog Electronics Lab', code: 'EC202L', fac: 'Mrs. R. Sujatha' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 2, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-      { p: 3, sub: 'Network Analysis', code: 'EC201', fac: 'Dr. G. Narsimha' },
-      { p: 4, sub: 'Analog Electronics', code: 'EC202', fac: 'Mrs. R. Sujatha' },
-      { p: 5, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-      { p: 2, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 3, sub: 'Analog Electronics', code: 'EC202', fac: 'Mrs. R. Sujatha' },
-      { p: 4, sub: 'Network Analysis', code: 'EC201', fac: 'Dr. G. Narsimha' },
-      { p: 5, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-    ], lab: { sub: 'Network Analysis Lab', code: 'EC201L', fac: 'Dr. G. Narsimha' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Network Analysis', code: 'EC201', fac: 'Dr. G. Narsimha' },
-      { p: 2, sub: 'Analog Electronics', code: 'EC202', fac: 'Mrs. R. Sujatha' },
-      { p: 3, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 5, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-    ] },
-  ])
+  return makeWeek(
+    'ECE-201',
+    [
+      { sub: 'Signals & Systems', code: 'EC301PC', fac: 'Dr. G. Narsimha' },
+      { sub: 'Analog Electronics', code: 'EC302PC', fac: 'Mrs. R. Sujatha' },
+      { sub: 'Electromagnetic Theory', code: 'EC303PC', fac: 'Dr. G. Narsimha' },
+      { sub: 'Control Systems', code: 'EC304PC', fac: 'Mrs. R. Sujatha' },
+      { sub: 'Electronic Devices & Circuits', code: 'EC305PC', fac: 'Dr. G. Narsimha' },
+    ],
+    {
+      1: { sub: 'Modelling & Simulation Lab', code: 'EC307PC', fac: 'Dr. G. Narsimha' },
+      2: { sub: 'Electronic Devices & Circuits Lab', code: 'EC308PC', fac: 'Mrs. R. Sujatha' },
+      3: { sub: 'Digital Logic Design Lab', code: 'EC309PC', fac: 'Mrs. R. Sujatha' },
+      4: { sub: 'Computational Mathematics Lab', code: 'MA306PC', fac: 'Dr. K. Sridevi' },
+      5: { sub: 'Linux & Shell Scripting', code: 'EC310SD', fac: 'Dr. G. Narsimha' },
+    },
+    {
+      2: { 5: { sub: 'Environmental Science', code: 'VA300ES', fac: 'Mrs. N. Lavanya' } },
+    }
+  )
 }
 
-function yearIISemIEEEEE(): SlotDraft[] {
-  return buildWeek('EEE-101', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Circuit Theory', code: 'EE201', fac: 'Dr. S. Ranganath' },
-      { p: 2, sub: 'Electrical Machines – I', code: 'EE202', fac: 'Mr. P. Ravi Teja' },
-      { p: 3, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-      { p: 5, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Electrical Machines – I', code: 'EE202', fac: 'Mr. P. Ravi Teja' },
-      { p: 2, sub: 'Circuit Theory', code: 'EE201', fac: 'Dr. S. Ranganath' },
-      { p: 3, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 4, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 5, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-    ], lab: { sub: 'Circuit Theory Lab', code: 'EE201L', fac: 'Dr. S. Ranganath' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 2, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-      { p: 3, sub: 'Circuit Theory', code: 'EE201', fac: 'Dr. S. Ranganath' },
-      { p: 4, sub: 'Electrical Machines – I', code: 'EE202', fac: 'Mr. P. Ravi Teja' },
-      { p: 5, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-      { p: 2, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 3, sub: 'Electrical Machines – I', code: 'EE202', fac: 'Mr. P. Ravi Teja' },
-      { p: 4, sub: 'Circuit Theory', code: 'EE201', fac: 'Dr. S. Ranganath' },
-      { p: 5, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-    ], lab: { sub: 'Electrical Machines Lab', code: 'EE202L', fac: 'Mr. P. Ravi Teja' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Circuit Theory', code: 'EE201', fac: 'Dr. S. Ranganath' },
-      { p: 2, sub: 'Electrical Machines – I', code: 'EE202', fac: 'Mr. P. Ravi Teja' },
-      { p: 3, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 5, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-    ] },
-  ])
+function yearIISemIEEEEEE(): SlotDraft[] {
+  return makeWeek(
+    'EEE-101',
+    [
+      { sub: 'Electromagnetic Fields', code: 'EE301PC', fac: 'Dr. S. Ranganath' },
+      { sub: 'Electrical Machines - I', code: 'EE302PC', fac: 'Mr. P. Ravi Teja' },
+      { sub: 'Electronic Devices & Circuits', code: 'EE303PC', fac: 'Dr. S. Ranganath' },
+      { sub: 'Power Systems - I', code: 'EE304PC', fac: 'Mr. P. Ravi Teja' },
+      { sub: 'Electrical Measurements & Sensors', code: 'EE305PC', fac: 'Dr. S. Ranganath' },
+    ],
+    {
+      1: { sub: 'Electrical Machines - I Lab', code: 'EE307PC', fac: 'Mr. P. Ravi Teja' },
+      3: { sub: 'Electrical Measurements Lab', code: 'EE308PC', fac: 'Dr. S. Ranganath' },
+      4: { sub: 'Electronic Devices & Circuits Lab', code: 'EE309PC', fac: 'Dr. S. Ranganath' },
+      5: { sub: 'Design of Electrical Systems using AutoCAD', code: 'EE310SD', fac: 'Mr. P. Ravi Teja' },
+    },
+    {
+      2: { 5: { sub: 'Innovation & Entrepreneurship', code: 'MS306HS', fac: 'Mrs. N. Lavanya' } },
+      3: { 5: { sub: 'Environmental Science', code: 'VA300ES', fac: 'Mrs. N. Lavanya' } },
+    }
+  )
+}
+
+function yearIISemIIT(): SlotDraft[] {
+  return makeWeek(
+    'IT-301',
+    [
+      { sub: 'Mathematical & Statistical Foundations', code: 'MA301BS', fac: 'Dr. K. Sridevi' },
+      { sub: 'Computer Organization & Microprocessor', code: 'IT302PC', fac: 'Dr. Hema Latha' },
+      { sub: 'Java Programming', code: 'IT303PC', fac: 'Dr. Hema Latha' },
+      { sub: 'Operating Systems', code: 'IT304PC', fac: 'Dr. Hema Latha' },
+      { sub: 'Introduction to IoT', code: 'IT305PC', fac: 'Dr. Hema Latha' },
+    ],
+    {
+      1: { sub: 'Java Programming Lab', code: 'IT307PC', fac: 'Dr. Hema Latha' },
+      2: { sub: 'Operating Systems Lab', code: 'IT308PC', fac: 'Dr. Hema Latha' },
+      3: { sub: 'IoT Lab', code: 'IT309PC', fac: 'Dr. Hema Latha' },
+      4: { sub: 'Computational Mathematics Lab', code: 'MA306PC', fac: 'Dr. K. Sridevi' },
+      5: { sub: 'Data Visualization', code: 'IT310SD', fac: 'Dr. Hema Latha' },
+    }
+  )
 }
 
 function yearIISemICivil(): SlotDraft[] {
-  return buildWeek('Civil-201', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Surveying', code: 'CV201', fac: 'Dr. L. Mahesh' },
-      { p: 2, sub: 'Strength of Materials', code: 'CV202', fac: 'Dr. L. Mahesh' },
-      { p: 3, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-      { p: 5, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Strength of Materials', code: 'CV202', fac: 'Dr. L. Mahesh' },
-      { p: 2, sub: 'Surveying', code: 'CV201', fac: 'Dr. L. Mahesh' },
-      { p: 3, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 4, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 5, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-    ], lab: { sub: 'Surveying Lab', code: 'CV201L', fac: 'Dr. L. Mahesh' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 2, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-      { p: 3, sub: 'Surveying', code: 'CV201', fac: 'Dr. L. Mahesh' },
-      { p: 4, sub: 'Strength of Materials', code: 'CV202', fac: 'Dr. L. Mahesh' },
-      { p: 5, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-      { p: 2, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 3, sub: 'Strength of Materials', code: 'CV202', fac: 'Dr. L. Mahesh' },
-      { p: 4, sub: 'Surveying', code: 'CV201', fac: 'Dr. L. Mahesh' },
-      { p: 5, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-    ], lab: { sub: 'Strength of Materials Lab', code: 'CV202L', fac: 'Dr. L. Mahesh' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Surveying', code: 'CV201', fac: 'Dr. L. Mahesh' },
-      { p: 2, sub: 'Strength of Materials', code: 'CV202', fac: 'Dr. L. Mahesh' },
-      { p: 3, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 5, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-    ] },
-  ])
+  return makeWeek(
+    'Civil-201',
+    [
+      { sub: 'Probability & Statistics', code: 'CV301PC', fac: 'Dr. K. Sridevi' },
+      { sub: 'Building Planning & Construction', code: 'CV302PC', fac: 'Dr. L. Mahesh' },
+      { sub: 'Strength of Materials', code: 'CV303PC', fac: 'Dr. L. Mahesh' },
+      { sub: 'Surveying & Geomatics', code: 'CV304PC', fac: 'Dr. L. Mahesh' },
+      { sub: 'Fluid Mechanics', code: 'CV305PC', fac: 'Dr. L. Mahesh' },
+    ],
+    {
+      1: { sub: 'Computer Aided Building Drafting Lab', code: 'CV307PC', fac: 'Dr. L. Mahesh' },
+      2: { sub: 'Strength of Materials Lab', code: 'CV308PC', fac: 'Dr. L. Mahesh' },
+      3: { sub: 'Surveying & Geomatics Lab', code: 'CV309PC', fac: 'Dr. L. Mahesh' },
+      4: { sub: 'Computational Mathematics Lab', code: 'MA306PC', fac: 'Dr. K. Sridevi' },
+      5: { sub: 'Design Thinking Lab', code: 'CV310SD', fac: 'Dr. L. Mahesh' },
+    }
+  )
 }
 
 function yearIISemIMech(): SlotDraft[] {
-  return buildWeek('Mech-101', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Engineering Mechanics', code: 'ME201', fac: 'Mr. K. Suresh' },
-      { p: 2, sub: 'Thermodynamics', code: 'ME202', fac: 'Mr. K. Suresh' },
-      { p: 3, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-      { p: 5, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Thermodynamics', code: 'ME202', fac: 'Mr. K. Suresh' },
-      { p: 2, sub: 'Engineering Mechanics', code: 'ME201', fac: 'Mr. K. Suresh' },
-      { p: 3, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 4, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 5, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-    ], lab: { sub: 'Engineering Mechanics Lab', code: 'ME201L', fac: 'Mr. K. Suresh' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 2, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-      { p: 3, sub: 'Engineering Mechanics', code: 'ME201', fac: 'Mr. K. Suresh' },
-      { p: 4, sub: 'Thermodynamics', code: 'ME202', fac: 'Mr. K. Suresh' },
-      { p: 5, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-      { p: 2, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 3, sub: 'Thermodynamics', code: 'ME202', fac: 'Mr. K. Suresh' },
-      { p: 4, sub: 'Engineering Mechanics', code: 'ME201', fac: 'Mr. K. Suresh' },
-      { p: 5, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-    ], lab: { sub: 'Thermodynamics Lab', code: 'ME202L', fac: 'Mr. K. Suresh' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Engineering Mechanics', code: 'ME201', fac: 'Mr. K. Suresh' },
-      { p: 2, sub: 'Thermodynamics', code: 'ME202', fac: 'Mr. K. Suresh' },
-      { p: 3, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 5, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-    ] },
-  ])
+  return makeWeek(
+    'Mech-101',
+    [
+      { sub: 'Engineering Mechanics', code: 'ME301PC', fac: 'Mr. K. Suresh' },
+      { sub: 'Thermodynamics', code: 'ME302PC', fac: 'Mr. K. Suresh' },
+      { sub: 'Manufacturing Technology', code: 'ME303PC', fac: 'Mr. K. Suresh' },
+      { sub: 'Materials Science & Engineering', code: 'ME304PC', fac: 'Mr. K. Suresh' },
+      { sub: 'Machine Drawing', code: 'ME305PC', fac: 'Mr. K. Suresh' },
+    ],
+    {
+      1: { sub: 'Thermodynamics Lab', code: 'ME307PC', fac: 'Mr. K. Suresh' },
+      2: { sub: 'Manufacturing Technology Lab', code: 'ME308PC', fac: 'Mr. K. Suresh' },
+      3: { sub: 'Materials Testing Lab', code: 'ME309PC', fac: 'Mr. K. Suresh' },
+      4: { sub: 'Computational Mathematics Lab', code: 'MA306PC', fac: 'Dr. K. Sridevi' },
+      5: { sub: 'CAD/CAM Lab', code: 'ME310SD', fac: 'Mr. K. Suresh' },
+    }
+  )
 }
 
 // ============================================================================
-//  YEAR II — SEMESTER II (BRANCH-SPECIFIC ADVANCEMENTS)
+//  YEAR II — SEMESTER II (JNTUH R25)
 // ============================================================================
 
-function yearIISemIIBranchCseFamily(branch: string): SlotDraft[] {
-  const roomByBranch: Record<string, string> = {
-    CSE: 'CSE-301',
-    'CSE-AIML': 'CSE-AIML-401',
-    'CSE-CSBS': 'CSE-CSBS-402',
-    'CSE-DS': 'CSE-DS-403',
-  }
-  const room = roomByBranch[branch] ?? 'CSE-301'
-  const fifthSubject = branch === 'CSE-CSBS' ? 'Business Economics' : 'English – II'
-  const fifthCode = branch === 'CSE-CSBS' ? 'HS205' : 'HS201'
-  const fifthFac = branch === 'CSE-CSBS' ? 'Mrs. N. Lavanya' : 'Mr. V. Ravi Kumar'
-  return buildWeek(room, [
-    { day: 1, periods: [
-      { p: 1, sub: 'Computer Organization', code: 'CS204', fac: 'Dr. A. Ramesh' },
-      { p: 2, sub: 'Design & Analysis of Algorithms', code: 'CS205', fac: 'Dr. A. Ramesh' },
-      { p: 3, sub: 'Discrete Mathematics', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'OOP through Java', code: 'CS203', fac: 'Mr. T. Vijay' },
-      { p: 5, sub: fifthSubject, code: fifthCode, fac: fifthFac },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'OOP through Java', code: 'CS203', fac: 'Mr. T. Vijay' },
-      { p: 2, sub: 'Computer Organization', code: 'CS204', fac: 'Dr. A. Ramesh' },
-      { p: 3, sub: fifthSubject, code: fifthCode, fac: fifthFac },
-      { p: 4, sub: 'Discrete Mathematics', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 5, sub: 'Design & Analysis of Algorithms', code: 'CS205', fac: 'Dr. A. Ramesh' },
-    ], lab: { sub: 'Java Programming Lab', code: 'CS203L', fac: 'Mr. T. Vijay' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Design & Analysis of Algorithms', code: 'CS205', fac: 'Dr. A. Ramesh' },
-      { p: 2, sub: 'Discrete Mathematics', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 3, sub: 'Computer Organization', code: 'CS204', fac: 'Dr. A. Ramesh' },
-      { p: 4, sub: 'OOP through Java', code: 'CS203', fac: 'Mr. T. Vijay' },
-      { p: 5, sub: fifthSubject, code: fifthCode, fac: fifthFac },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: fifthSubject, code: fifthCode, fac: fifthFac },
-      { p: 2, sub: 'OOP through Java', code: 'CS203', fac: 'Mr. T. Vijay' },
-      { p: 3, sub: 'Design & Analysis of Algorithms', code: 'CS205', fac: 'Dr. A. Ramesh' },
-      { p: 4, sub: 'Computer Organization', code: 'CS204', fac: 'Dr. A. Ramesh' },
-      { p: 5, sub: 'Discrete Mathematics', code: 'MA201', fac: 'Dr. K. Sridevi' },
-    ], lab: { sub: 'Operating Systems Lab', code: 'CS303L', fac: 'Mr. T. Vijay' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Computer Organization', code: 'CS204', fac: 'Dr. A. Ramesh' },
-      { p: 2, sub: 'Design & Analysis of Algorithms', code: 'CS205', fac: 'Dr. A. Ramesh' },
-      { p: 3, sub: 'Discrete Mathematics', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: fifthSubject, code: fifthCode, fac: fifthFac },
-      { p: 5, sub: 'OOP through Java', code: 'CS203', fac: 'Mr. T. Vijay' },
-    ] },
-  ])
+function yearIISemIIUnitCseDs(room: string): SlotDraft[] {
+  return makeWeek(
+    room,
+    [
+      { sub: 'Discrete Mathematics', code: 'CS401PC', fac: 'Dr. K. Sridevi' },
+      { sub: 'Software Engineering', code: 'CS402PC', fac: 'Dr. A. Ramesh' },
+      { sub: 'Algorithm Design & Analysis', code: 'CS403PC', fac: 'Mr. T. Vijay' },
+      { sub: 'Computer Networks', code: 'CS404PC', fac: 'Mrs. S. Priya' },
+      { sub: 'Machine Learning', code: 'CS405PC', fac: 'Dr. R. Kiran' },
+    ],
+    {
+      1: { sub: 'Software Engineering Lab', code: 'CS407PC', fac: 'Mrs. S. Priya' },
+      2: { sub: 'Computer Networks Lab', code: 'CS408PC', fac: 'Mrs. S. Priya' },
+      3: { sub: 'Machine Learning Lab', code: 'CS409PC', fac: 'Dr. R. Kiran' },
+      4: { sub: 'Computational Mathematics Lab', code: 'MA406PC', fac: 'Dr. K. Sridevi' },
+      5: { sub: 'Data Visualization', code: 'CS410SD', fac: 'Dr. Hema Latha' },
+    }
+  )
+}
+
+function yearIISemIICSEAIML(): SlotDraft[] {
+  return makeWeek(
+    'CSE-AIML-401',
+    [
+      { sub: 'Discrete Mathematics', code: 'CS401PC', fac: 'Dr. K. Sridevi' },
+      { sub: 'Operating Systems', code: 'CS402PC', fac: 'Dr. A. Ramesh' },
+      { sub: 'Algorithms Design & Analysis', code: 'CS403PC', fac: 'Mr. T. Vijay' },
+      { sub: 'Computer Networks', code: 'CS404PC', fac: 'Mrs. S. Priya' },
+      { sub: 'Machine Learning', code: 'CS405PC', fac: 'Dr. R. Kiran' },
+    ],
+    {
+      1: { sub: 'Operating Systems Lab', code: 'CS407PC', fac: 'Dr. A. Ramesh' },
+      3: { sub: 'Computer Networks Lab', code: 'CS408PC', fac: 'Mrs. S. Priya' },
+      4: { sub: 'Machine Learning Lab', code: 'CS409PC', fac: 'Dr. R. Kiran' },
+      5: { sub: 'Data Visualization', code: 'CS410SD', fac: 'Dr. Hema Latha' },
+    },
+    {
+      2: { 5: { sub: 'Innovation & Entrepreneurship', code: 'MS406HS', fac: 'Mrs. N. Lavanya' } },
+      3: { 5: { sub: 'Indian Knowledge System', code: 'VA400HS', fac: 'Mrs. N. Lavanya' } },
+    }
+  )
+}
+
+function yearIISemIICSECSBS(): SlotDraft[] {
+  return makeWeek(
+    'CSE-CSBS-402',
+    [
+      { sub: 'Discrete Mathematics', code: 'CS401PC', fac: 'Dr. K. Sridevi' },
+      { sub: 'Operating Systems', code: 'CS402PC', fac: 'Dr. A. Ramesh' },
+      { sub: 'Artificial Intelligence', code: 'CB403PC', fac: 'Dr. R. Kiran' },
+      { sub: 'Software Engineering', code: 'CS404PC', fac: 'Mrs. S. Priya' },
+      { sub: 'Business Economics & Financial Analysis', code: 'MS405HS', fac: 'Mrs. N. Lavanya' },
+    ],
+    {
+      1: { sub: 'Operating Systems Lab', code: 'CS407PC', fac: 'Dr. A. Ramesh' },
+      3: { sub: 'AI Lab', code: 'CS408PC', fac: 'Dr. R. Kiran' },
+      4: { sub: 'Software Engineering Lab', code: 'CS409PC', fac: 'Mrs. S. Priya' },
+      5: { sub: 'Node JS/React JS/Django', code: 'CS410SD', fac: 'Dr. Hema Latha' },
+    },
+    {
+      2: { 5: { sub: 'Innovation & Entrepreneurship', code: 'MS406HS', fac: 'Mrs. N. Lavanya' } },
+      3: { 5: { sub: 'Indian Knowledge System', code: 'VA400HS', fac: 'Mrs. N. Lavanya' } },
+    }
+  )
 }
 
 function yearIISemIIECE(): SlotDraft[] {
-  return buildWeek('ECE-201', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Signals & Systems', code: 'EC203', fac: 'Dr. G. Narsimha' },
-      { p: 2, sub: 'Electromagnetic Theory', code: 'EC204', fac: 'Dr. G. Narsimha' },
-      { p: 3, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'Analog Electronics', code: 'EC202', fac: 'Mrs. R. Sujatha' },
-      { p: 5, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Analog Electronics', code: 'EC202', fac: 'Mrs. R. Sujatha' },
-      { p: 2, sub: 'Signals & Systems', code: 'EC203', fac: 'Dr. G. Narsimha' },
-      { p: 3, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 4, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 5, sub: 'Electromagnetic Theory', code: 'EC204', fac: 'Dr. G. Narsimha' },
-    ], lab: { sub: 'Analog Electronics Lab', code: 'EC202L', fac: 'Mrs. R. Sujatha' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Electromagnetic Theory', code: 'EC204', fac: 'Dr. G. Narsimha' },
-      { p: 2, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 3, sub: 'Signals & Systems', code: 'EC203', fac: 'Dr. G. Narsimha' },
-      { p: 4, sub: 'Analog Electronics', code: 'EC202', fac: 'Mrs. R. Sujatha' },
-      { p: 5, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 2, sub: 'Analog Electronics', code: 'EC202', fac: 'Mrs. R. Sujatha' },
-      { p: 3, sub: 'Electromagnetic Theory', code: 'EC204', fac: 'Dr. G. Narsimha' },
-      { p: 4, sub: 'Signals & Systems', code: 'EC203', fac: 'Dr. G. Narsimha' },
-      { p: 5, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-    ], lab: { sub: 'Network Analysis Lab', code: 'EC201L', fac: 'Dr. G. Narsimha' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Signals & Systems', code: 'EC203', fac: 'Dr. G. Narsimha' },
-      { p: 2, sub: 'Electromagnetic Theory', code: 'EC204', fac: 'Dr. G. Narsimha' },
-      { p: 3, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 5, sub: 'Analog Electronics', code: 'EC202', fac: 'Mrs. R. Sujatha' },
-    ] },
-  ])
+  return makeWeek(
+    'ECE-201',
+    [
+      { sub: 'Digital Signal Processing', code: 'EC401PC', fac: 'Dr. G. Narsimha' },
+      { sub: 'Analog Communication', code: 'EC402PC', fac: 'Mrs. R. Sujatha' },
+      { sub: 'VLSI Design', code: 'EC403PC', fac: 'Mrs. R. Sujatha' },
+      { sub: 'Microprocessors & Microcontrollers', code: 'EC404PC', fac: 'Dr. G. Narsimha' },
+      { sub: 'Information Theory & Coding', code: 'EC405PC', fac: 'Mrs. R. Sujatha' },
+    ],
+    {
+      1: { sub: 'DSP Lab', code: 'EC407PC', fac: 'Dr. G. Narsimha' },
+      3: { sub: 'Communication Systems Lab', code: 'EC408PC', fac: 'Mrs. R. Sujatha' },
+      4: { sub: 'VLSI Design Lab', code: 'EC409PC', fac: 'Mrs. R. Sujatha' },
+      5: { sub: 'Data Visualization', code: 'EC410SD', fac: 'Dr. G. Narsimha' },
+    },
+    {
+      2: { 5: { sub: 'Innovation & Entrepreneurship', code: 'MS406HS', fac: 'Mrs. N. Lavanya' } },
+      3: { 5: { sub: 'Indian Knowledge System', code: 'VA400HS', fac: 'Mrs. N. Lavanya' } },
+    }
+  )
 }
 
 function yearIISemIIEEEEEE(): SlotDraft[] {
-  return buildWeek('EEE-101', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Electromagnetic Fields', code: 'EE203', fac: 'Dr. S. Ranganath' },
-      { p: 2, sub: 'Electrical Machines – II', code: 'EE204', fac: 'Mr. P. Ravi Teja' },
-      { p: 3, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-      { p: 5, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Electrical Machines – II', code: 'EE204', fac: 'Mr. P. Ravi Teja' },
-      { p: 2, sub: 'Electromagnetic Fields', code: 'EE203', fac: 'Dr. S. Ranganath' },
-      { p: 3, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 4, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 5, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-    ], lab: { sub: 'Electrical Machines Lab', code: 'EE204L', fac: 'Mr. P. Ravi Teja' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 2, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-      { p: 3, sub: 'Electromagnetic Fields', code: 'EE203', fac: 'Dr. S. Ranganath' },
-      { p: 4, sub: 'Electrical Machines – II', code: 'EE204', fac: 'Mr. P. Ravi Teja' },
-      { p: 5, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 2, sub: 'Electrical Machines – II', code: 'EE204', fac: 'Mr. P. Ravi Teja' },
-      { p: 3, sub: 'Electromagnetic Fields', code: 'EE203', fac: 'Dr. S. Ranganath' },
-      { p: 4, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 5, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-    ], lab: { sub: 'Circuit Theory Lab', code: 'EE201L', fac: 'Dr. S. Ranganath' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Electromagnetic Fields', code: 'EE203', fac: 'Dr. S. Ranganath' },
-      { p: 2, sub: 'Electrical Machines – II', code: 'EE204', fac: 'Mr. P. Ravi Teja' },
-      { p: 3, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 5, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-    ] },
-  ])
+  return makeWeek(
+    'EEE-101',
+    [
+      { sub: 'Numerical Methods & Complex Variables', code: 'EE401PC', fac: 'Dr. K. Sridevi' },
+      { sub: 'Control Systems', code: 'EE402PC', fac: 'Dr. S. Ranganath' },
+      { sub: 'Digital Electronics', code: 'EE403PC', fac: 'Mr. P. Ravi Teja' },
+      { sub: 'Power Systems - II', code: 'EE404PC', fac: 'Dr. S. Ranganath' },
+      { sub: 'Electrical Machines - II', code: 'EE405PC', fac: 'Mr. P. Ravi Teja' },
+    ],
+    {
+      1: { sub: 'Digital Electronics Lab', code: 'EE406PC', fac: 'Mr. P. Ravi Teja' },
+      3: { sub: 'Control Systems Lab', code: 'EE407PC', fac: 'Dr. S. Ranganath' },
+      4: { sub: 'Power Systems Lab', code: 'EE408PC', fac: 'Dr. S. Ranganath' },
+      5: { sub: 'PCB Design', code: 'EE409PC', fac: 'Mr. P. Ravi Teja' },
+    },
+    {
+      2: { 5: { sub: 'Indian Knowledge System', code: 'VA400HS', fac: 'Mrs. N. Lavanya' } },
+    }
+  )
+}
+
+function yearIISemIIIT(): SlotDraft[] {
+  return makeWeek(
+    'IT-301',
+    [
+      { sub: 'Discrete Mathematics', code: 'CS401PC', fac: 'Dr. K. Sridevi' },
+      { sub: 'Software Engineering', code: 'IT402PC', fac: 'Dr. Hema Latha' },
+      { sub: 'Web Technologies', code: 'IT403PC', fac: 'Dr. Hema Latha' },
+      { sub: 'Computer Networks', code: 'CS404PC', fac: 'Dr. Hema Latha' },
+      { sub: 'Database Management Systems', code: 'IT405PC', fac: 'Dr. Hema Latha' },
+    ],
+    {
+      1: { sub: 'DBMS Lab', code: 'CS407PC', fac: 'Dr. Hema Latha' },
+      3: { sub: 'Computer Networks Lab', code: 'IT408PC', fac: 'Dr. Hema Latha' },
+      4: { sub: 'Web Programming Lab', code: 'IT409PC', fac: 'Dr. Hema Latha' },
+      5: { sub: 'Node JS/React JS/Django/UI Design Flutter', code: 'IT410SD', fac: 'Dr. Hema Latha' },
+    },
+    {
+      2: { 5: { sub: 'Innovation & Entrepreneurship', code: 'MS406HS', fac: 'Mrs. N. Lavanya' } },
+      3: { 5: { sub: 'Indian Knowledge System', code: 'VA400HS', fac: 'Mrs. N. Lavanya' } },
+    }
+  )
 }
 
 function yearIISemIICivil(): SlotDraft[] {
-  return buildWeek('Civil-201', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Fluid Mechanics', code: 'CV203', fac: 'Dr. L. Mahesh' },
-      { p: 2, sub: 'Structural Analysis – I', code: 'CV204', fac: 'Dr. L. Mahesh' },
-      { p: 3, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-      { p: 5, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Structural Analysis – I', code: 'CV204', fac: 'Dr. L. Mahesh' },
-      { p: 2, sub: 'Fluid Mechanics', code: 'CV203', fac: 'Dr. L. Mahesh' },
-      { p: 3, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 4, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 5, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-    ], lab: { sub: 'Fluid Mechanics Lab', code: 'CV203L', fac: 'Dr. L. Mahesh' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 2, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-      { p: 3, sub: 'Fluid Mechanics', code: 'CV203', fac: 'Dr. L. Mahesh' },
-      { p: 4, sub: 'Structural Analysis – I', code: 'CV204', fac: 'Dr. L. Mahesh' },
-      { p: 5, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 2, sub: 'Structural Analysis – I', code: 'CV204', fac: 'Dr. L. Mahesh' },
-      { p: 3, sub: 'Fluid Mechanics', code: 'CV203', fac: 'Dr. L. Mahesh' },
-      { p: 4, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 5, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-    ], lab: { sub: 'Surveying Lab', code: 'CV201L', fac: 'Dr. L. Mahesh' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Fluid Mechanics', code: 'CV203', fac: 'Dr. L. Mahesh' },
-      { p: 2, sub: 'Structural Analysis – I', code: 'CV204', fac: 'Dr. L. Mahesh' },
-      { p: 3, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 5, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-    ] },
-  ])
+  return makeWeek(
+    'Civil-201',
+    [
+      { sub: 'Concrete Technology', code: 'CV401PC', fac: 'Dr. L. Mahesh' },
+      { sub: 'Advanced Strength of Materials', code: 'CV402PC', fac: 'Dr. L. Mahesh' },
+      { sub: 'Geotechnical Engineering', code: 'CV403PC', fac: 'Dr. L. Mahesh' },
+      { sub: 'Transportation Engineering', code: 'CV404PC', fac: 'Dr. L. Mahesh' },
+      { sub: 'Environmental Engineering', code: 'CV405PC', fac: 'Dr. L. Mahesh' },
+    ],
+    {
+      1: { sub: 'Geotechnical Engineering Lab', code: 'CV406PC', fac: 'Dr. L. Mahesh' },
+      2: { sub: 'Transportation Engineering Lab', code: 'CV407PC', fac: 'Dr. L. Mahesh' },
+      3: { sub: 'Environmental Engineering Lab', code: 'CV408PC', fac: 'Dr. L. Mahesh' },
+      4: { sub: 'Digital Surveying & GIS Lab', code: 'CV409SD', fac: 'Dr. L. Mahesh' },
+      5: { sub: 'Real Time/Field Based Project', code: 'CV410PC', fac: 'Dr. L. Mahesh' },
+    },
+    {
+      2: { 5: { sub: 'Innovation & Entrepreneurship', code: 'MS406HS', fac: 'Mrs. N. Lavanya' } },
+      3: { 5: { sub: 'Environmental Science', code: 'VA400ES', fac: 'Mrs. N. Lavanya' } },
+    }
+  )
 }
 
 function yearIISemIIMech(): SlotDraft[] {
-  return buildWeek('Mech-101', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Manufacturing Processes', code: 'ME203', fac: 'Mr. K. Suresh' },
-      { p: 2, sub: 'Kinematics of Machines', code: 'ME204', fac: 'Mr. K. Suresh' },
-      { p: 3, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-      { p: 5, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Kinematics of Machines', code: 'ME204', fac: 'Mr. K. Suresh' },
-      { p: 2, sub: 'Manufacturing Processes', code: 'ME203', fac: 'Mr. K. Suresh' },
-      { p: 3, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 4, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 5, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-    ], lab: { sub: 'Manufacturing Lab', code: 'ME203L', fac: 'Mr. K. Suresh' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 2, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-      { p: 3, sub: 'Manufacturing Processes', code: 'ME203', fac: 'Mr. K. Suresh' },
-      { p: 4, sub: 'Kinematics of Machines', code: 'ME204', fac: 'Mr. K. Suresh' },
-      { p: 5, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 2, sub: 'Kinematics of Machines', code: 'ME204', fac: 'Mr. K. Suresh' },
-      { p: 3, sub: 'Manufacturing Processes', code: 'ME203', fac: 'Mr. K. Suresh' },
-      { p: 4, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 5, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-    ], lab: { sub: 'Thermodynamics Lab', code: 'ME202L', fac: 'Mr. K. Suresh' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Manufacturing Processes', code: 'ME203', fac: 'Mr. K. Suresh' },
-      { p: 2, sub: 'Kinematics of Machines', code: 'ME204', fac: 'Mr. K. Suresh' },
-      { p: 3, sub: 'Engineering Mathematics – II', code: 'MA201', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'English – II', code: 'HS201', fac: 'Mr. V. Ravi Kumar' },
-      { p: 5, sub: 'Environmental Science', code: 'HS202', fac: 'Mrs. N. Lavanya' },
-    ] },
-  ])
-}
-
-function yearIISemII(branch: string): SlotDraft[] {
-  if (branch === 'ECE') return yearIISemIIECE()
-  if (branch === 'EEE') return yearIISemIIEEEEEE()
-  if (branch === 'Civil') return yearIISemIICivil()
-  if (branch === 'Mechanical') return yearIISemIIMech()
-  return yearIISemIIBranchCseFamily(branch)
+  return makeWeek(
+    'Mech-101',
+    [
+      { sub: 'Fluid Mechanics & Hydraulic Machines', code: 'ME401PC', fac: 'Mr. K. Suresh' },
+      { sub: 'Machine Design', code: 'ME402PC', fac: 'Mr. K. Suresh' },
+      { sub: 'Heat Transfer', code: 'ME403PC', fac: 'Mr. K. Suresh' },
+      { sub: 'Dynamics of Machinery', code: 'ME404PC', fac: 'Mr. K. Suresh' },
+      { sub: 'Metrology & Quality Engineering', code: 'ME405PC', fac: 'Mr. K. Suresh' },
+    ],
+    {
+      1: { sub: 'Fluid Mechanics Lab', code: 'ME406PC', fac: 'Mr. K. Suresh' },
+      3: { sub: 'Heat Transfer Lab', code: 'ME407PC', fac: 'Mr. K. Suresh' },
+      4: { sub: 'Metrology Lab', code: 'ME408PC', fac: 'Mr. K. Suresh' },
+      5: { sub: 'Data Visualization', code: 'ME409SD', fac: 'Mr. K. Suresh' },
+    },
+    {
+      2: { 5: { sub: 'Innovation & Entrepreneurship', code: 'MS406HS', fac: 'Mrs. N. Lavanya' } },
+      3: { 5: { sub: 'Indian Knowledge System', code: 'VA400HS', fac: 'Mrs. N. Lavanya' } },
+    }
+  )
 }
 
 // ============================================================================
-//  YEAR III — SEMESTER I (BRANCH-SPECIFIC)
+//  YEAR III — SEMESTER I (JNTUH R25)
 // ============================================================================
 
 function yearIIISemICSE(): SlotDraft[] {
-  return buildWeek('CSE-301', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Design & Analysis of Algorithms', code: 'CS301', fac: 'Dr. A. Ramesh' },
-      { p: 2, sub: 'Computer Organization', code: 'CS302', fac: 'Mrs. S. Priya' },
-      { p: 3, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'Operating Systems', code: 'CS303', fac: 'Mr. T. Vijay' },
-      { p: 5, sub: 'DBMS', code: 'CS304', fac: 'Dr. A. Ramesh' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Operating Systems', code: 'CS303', fac: 'Mr. T. Vijay' },
-      { p: 2, sub: 'Design & Analysis of Algorithms', code: 'CS301', fac: 'Dr. A. Ramesh' },
-      { p: 3, sub: 'DBMS', code: 'CS304', fac: 'Dr. A. Ramesh' },
-      { p: 4, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-      { p: 5, sub: 'Computer Organization', code: 'CS302', fac: 'Mrs. S. Priya' },
-    ], lab: { sub: 'Mini Project – I', code: 'CS399', fac: 'Dr. A. Ramesh' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Computer Organization', code: 'CS302', fac: 'Mrs. S. Priya' },
-      { p: 2, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-      { p: 3, sub: 'Design & Analysis of Algorithms', code: 'CS301', fac: 'Dr. A. Ramesh' },
-      { p: 4, sub: 'DBMS', code: 'CS304', fac: 'Dr. A. Ramesh' },
-      { p: 5, sub: 'Operating Systems', code: 'CS303', fac: 'Mr. T. Vijay' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'DBMS', code: 'CS304', fac: 'Dr. A. Ramesh' },
-      { p: 2, sub: 'Operating Systems', code: 'CS303', fac: 'Mr. T. Vijay' },
-      { p: 3, sub: 'Computer Organization', code: 'CS302', fac: 'Mrs. S. Priya' },
-      { p: 4, sub: 'Design & Analysis of Algorithms', code: 'CS301', fac: 'Dr. A. Ramesh' },
-      { p: 5, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-    ], lab: { sub: 'DBMS Lab', code: 'CS304L', fac: 'Dr. A. Ramesh' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-      { p: 2, sub: 'Design & Analysis of Algorithms', code: 'CS301', fac: 'Dr. A. Ramesh' },
-      { p: 3, sub: 'Operating Systems', code: 'CS303', fac: 'Mr. T. Vijay' },
-      { p: 4, sub: 'Computer Organization', code: 'CS302', fac: 'Mrs. S. Priya' },
-      { p: 5, sub: 'DBMS', code: 'CS304', fac: 'Dr. A. Ramesh' },
-    ] },
-  ])
+  return makeWeek(
+    'CSE-301',
+    [
+      { sub: 'Automata Theory & Compiler Design', code: 'CS501PC', fac: 'Dr. A. Ramesh' },
+      { sub: 'Artificial Intelligence', code: 'CS502PC', fac: 'Dr. R. Kiran' },
+      { sub: 'DevOps', code: 'CS503PC', fac: 'Mr. T. Vijay' },
+      { sub: 'Professional Elective - I', code: 'PE-I', fac: 'Dr. A. Ramesh' },
+      { sub: 'Open Elective - I', code: 'OE-I', fac: 'Mrs. S. Priya' },
+    ],
+    {
+      1: { sub: 'AI Lab', code: 'CS504PC', fac: 'Dr. R. Kiran' },
+      3: { sub: 'DevOps Lab', code: 'CS505PC', fac: 'Mr. T. Vijay' },
+      4: { sub: 'UI Design Flutter/Android', code: 'CS506SD', fac: 'Mrs. S. Priya' },
+    },
+    {
+      5: { 5: { sub: 'Indian Knowledge System', code: 'VA500HS', fac: 'Mrs. N. Lavanya' } },
+    }
+  )
 }
 
-function yearIIISemICSEAIML(): SlotDraft[] {
-  return buildWeek('CSE-AIML-401', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Machine Learning', code: 'AIML301', fac: 'Dr. R. Kiran' },
-      { p: 2, sub: 'Deep Learning Fundamentals', code: 'AIML302', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'Operating Systems', code: 'CS303', fac: 'Mr. T. Vijay' },
-      { p: 5, sub: 'Computer Vision', code: 'AIML303', fac: 'Dr. R. Kiran' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Operating Systems', code: 'CS303', fac: 'Mr. T. Vijay' },
-      { p: 2, sub: 'Machine Learning', code: 'AIML301', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Computer Vision', code: 'AIML303', fac: 'Dr. R. Kiran' },
-      { p: 4, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-      { p: 5, sub: 'Deep Learning Fundamentals', code: 'AIML302', fac: 'Dr. R. Kiran' },
-    ], lab: { sub: 'ML Lab', code: 'AIML301L', fac: 'Dr. R. Kiran' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Deep Learning Fundamentals', code: 'AIML302', fac: 'Dr. R. Kiran' },
-      { p: 2, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-      { p: 3, sub: 'Machine Learning', code: 'AIML301', fac: 'Dr. R. Kiran' },
-      { p: 4, sub: 'Computer Vision', code: 'AIML303', fac: 'Dr. R. Kiran' },
-      { p: 5, sub: 'Operating Systems', code: 'CS303', fac: 'Mr. T. Vijay' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Computer Vision', code: 'AIML303', fac: 'Dr. R. Kiran' },
-      { p: 2, sub: 'Operating Systems', code: 'CS303', fac: 'Mr. T. Vijay' },
-      { p: 3, sub: 'Deep Learning Fundamentals', code: 'AIML302', fac: 'Dr. R. Kiran' },
-      { p: 4, sub: 'Machine Learning', code: 'AIML301', fac: 'Dr. R. Kiran' },
-      { p: 5, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-    ], lab: { sub: 'Deep Learning Lab', code: 'AIML302L', fac: 'Dr. R. Kiran' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-      { p: 2, sub: 'Machine Learning', code: 'AIML301', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Operating Systems', code: 'CS303', fac: 'Mr. T. Vijay' },
-      { p: 4, sub: 'Deep Learning Fundamentals', code: 'AIML302', fac: 'Dr. R. Kiran' },
-      { p: 5, sub: 'Computer Vision', code: 'AIML303', fac: 'Dr. R. Kiran' },
-    ] },
-  ])
-}
-
-function yearIIISemICSECSBS(): SlotDraft[] {
-  return buildWeek('CSE-CSBS-402', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Data Analytics', code: 'CSBS301', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Financial Accounting', code: 'CSBS302', fac: 'Mrs. N. Lavanya' },
-      { p: 3, sub: 'Business Statistics', code: 'CSBS303', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'Software Engineering', code: 'CS305', fac: 'Dr. A. Ramesh' },
-      { p: 5, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Software Engineering', code: 'CS305', fac: 'Dr. A. Ramesh' },
-      { p: 2, sub: 'Data Analytics', code: 'CSBS301', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'Business Statistics', code: 'CSBS303', fac: 'Dr. K. Sridevi' },
-      { p: 5, sub: 'Financial Accounting', code: 'CSBS302', fac: 'Mrs. N. Lavanya' },
-    ], lab: { sub: 'Data Analytics Lab', code: 'CSBS301L', fac: 'Dr. Hema Latha' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Financial Accounting', code: 'CSBS302', fac: 'Mrs. N. Lavanya' },
-      { p: 2, sub: 'Business Statistics', code: 'CSBS303', fac: 'Dr. K. Sridevi' },
-      { p: 3, sub: 'Data Analytics', code: 'CSBS301', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'Software Engineering', code: 'CS305', fac: 'Dr. A. Ramesh' },
-      { p: 5, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Business Statistics', code: 'CSBS303', fac: 'Dr. K. Sridevi' },
-      { p: 2, sub: 'Software Engineering', code: 'CS305', fac: 'Dr. A. Ramesh' },
-      { p: 3, sub: 'Financial Accounting', code: 'CSBS302', fac: 'Mrs. N. Lavanya' },
-      { p: 4, sub: 'Data Analytics', code: 'CSBS301', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-    ], lab: { sub: 'Software Engineering Lab', code: 'CS305L', fac: 'Dr. A. Ramesh' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-      { p: 2, sub: 'Data Analytics', code: 'CSBS301', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'Software Engineering', code: 'CS305', fac: 'Dr. A. Ramesh' },
-      { p: 4, sub: 'Financial Accounting', code: 'CSBS302', fac: 'Mrs. N. Lavanya' },
-      { p: 5, sub: 'Business Statistics', code: 'CSBS303', fac: 'Dr. K. Sridevi' },
-    ] },
-  ])
-}
-
-function yearIIISemICSEDS(): SlotDraft[] {
-  return buildWeek('CSE-DS-403', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Data Mining', code: 'DS301', fac: 'Dr. R. Kiran' },
-      { p: 2, sub: 'Big Data Technologies', code: 'DS302', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'Advanced Statistics', code: 'MA302', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'Machine Learning', code: 'AIML301', fac: 'Dr. R. Kiran' },
-      { p: 5, sub: 'Operating Systems', code: 'CS303', fac: 'Mr. T. Vijay' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Machine Learning', code: 'AIML301', fac: 'Dr. R. Kiran' },
-      { p: 2, sub: 'Data Mining', code: 'DS301', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Operating Systems', code: 'CS303', fac: 'Mr. T. Vijay' },
-      { p: 4, sub: 'Advanced Statistics', code: 'MA302', fac: 'Dr. K. Sridevi' },
-      { p: 5, sub: 'Big Data Technologies', code: 'DS302', fac: 'Dr. Hema Latha' },
-    ], lab: { sub: 'Data Mining Lab', code: 'DS301L', fac: 'Dr. R. Kiran' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Big Data Technologies', code: 'DS302', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Advanced Statistics', code: 'MA302', fac: 'Dr. K. Sridevi' },
-      { p: 3, sub: 'Data Mining', code: 'DS301', fac: 'Dr. R. Kiran' },
-      { p: 4, sub: 'Machine Learning', code: 'AIML301', fac: 'Dr. R. Kiran' },
-      { p: 5, sub: 'Operating Systems', code: 'CS303', fac: 'Mr. T. Vijay' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Operating Systems', code: 'CS303', fac: 'Mr. T. Vijay' },
-      { p: 2, sub: 'Machine Learning', code: 'AIML301', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Big Data Technologies', code: 'DS302', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'Data Mining', code: 'DS301', fac: 'Dr. R. Kiran' },
-      { p: 5, sub: 'Advanced Statistics', code: 'MA302', fac: 'Dr. K. Sridevi' },
-    ], lab: { sub: 'Big Data Lab', code: 'DS302L', fac: 'Dr. Hema Latha' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Advanced Statistics', code: 'MA302', fac: 'Dr. K. Sridevi' },
-      { p: 2, sub: 'Data Mining', code: 'DS301', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Operating Systems', code: 'CS303', fac: 'Mr. T. Vijay' },
-      { p: 4, sub: 'Big Data Technologies', code: 'DS302', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Machine Learning', code: 'AIML301', fac: 'Dr. R. Kiran' },
-    ] },
-  ])
-}
-
-function yearIIISemIECE(): SlotDraft[] {
-  return buildWeek('ECE-201', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Signals & Systems', code: 'EC301', fac: 'Dr. G. Narsimha' },
-      { p: 2, sub: 'Analog Communication', code: 'EC302', fac: 'Mrs. R. Sujatha' },
-      { p: 3, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'Electromagnetic Theory', code: 'EC303', fac: 'Dr. G. Narsimha' },
-      { p: 5, sub: 'VLSI Design', code: 'EC304', fac: 'Mrs. R. Sujatha' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Electromagnetic Theory', code: 'EC303', fac: 'Dr. G. Narsimha' },
-      { p: 2, sub: 'Signals & Systems', code: 'EC301', fac: 'Dr. G. Narsimha' },
-      { p: 3, sub: 'VLSI Design', code: 'EC304', fac: 'Mrs. R. Sujatha' },
-      { p: 4, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-      { p: 5, sub: 'Analog Communication', code: 'EC302', fac: 'Mrs. R. Sujatha' },
-    ], lab: { sub: 'VLSI Design Lab', code: 'EC304L', fac: 'Mrs. R. Sujatha' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Analog Communication', code: 'EC302', fac: 'Mrs. R. Sujatha' },
-      { p: 2, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-      { p: 3, sub: 'Signals & Systems', code: 'EC301', fac: 'Dr. G. Narsimha' },
-      { p: 4, sub: 'VLSI Design', code: 'EC304', fac: 'Mrs. R. Sujatha' },
-      { p: 5, sub: 'Electromagnetic Theory', code: 'EC303', fac: 'Dr. G. Narsimha' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'VLSI Design', code: 'EC304', fac: 'Mrs. R. Sujatha' },
-      { p: 2, sub: 'Electromagnetic Theory', code: 'EC303', fac: 'Dr. G. Narsimha' },
-      { p: 3, sub: 'Analog Communication', code: 'EC302', fac: 'Mrs. R. Sujatha' },
-      { p: 4, sub: 'Signals & Systems', code: 'EC301', fac: 'Dr. G. Narsimha' },
-      { p: 5, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-    ], lab: { sub: 'Analog Communication Lab', code: 'EC302L', fac: 'Mrs. R. Sujatha' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-      { p: 2, sub: 'Signals & Systems', code: 'EC301', fac: 'Dr. G. Narsimha' },
-      { p: 3, sub: 'Electromagnetic Theory', code: 'EC303', fac: 'Dr. G. Narsimha' },
-      { p: 4, sub: 'Analog Communication', code: 'EC302', fac: 'Mrs. R. Sujatha' },
-      { p: 5, sub: 'VLSI Design', code: 'EC304', fac: 'Mrs. R. Sujatha' },
-    ] },
-  ])
-}
-
-function yearIIISemIEEEEEE(): SlotDraft[] {
-  return buildWeek('EEE-101', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Power Systems', code: 'EE301', fac: 'Dr. S. Ranganath' },
-      { p: 2, sub: 'Control Systems', code: 'EE302', fac: 'Mr. P. Ravi Teja' },
-      { p: 3, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'Electromagnetic Fields', code: 'EE303', fac: 'Dr. S. Ranganath' },
-      { p: 5, sub: 'Measurements & Instrumentation', code: 'EE304', fac: 'Mr. P. Ravi Teja' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Electromagnetic Fields', code: 'EE303', fac: 'Dr. S. Ranganath' },
-      { p: 2, sub: 'Power Systems', code: 'EE301', fac: 'Dr. S. Ranganath' },
-      { p: 3, sub: 'Measurements & Instrumentation', code: 'EE304', fac: 'Mr. P. Ravi Teja' },
-      { p: 4, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-      { p: 5, sub: 'Control Systems', code: 'EE302', fac: 'Mr. P. Ravi Teja' },
-    ], lab: { sub: 'Power Systems Lab', code: 'EE301L', fac: 'Dr. S. Ranganath' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Control Systems', code: 'EE302', fac: 'Mr. P. Ravi Teja' },
-      { p: 2, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-      { p: 3, sub: 'Power Systems', code: 'EE301', fac: 'Dr. S. Ranganath' },
-      { p: 4, sub: 'Measurements & Instrumentation', code: 'EE304', fac: 'Mr. P. Ravi Teja' },
-      { p: 5, sub: 'Electromagnetic Fields', code: 'EE303', fac: 'Dr. S. Ranganath' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Measurements & Instrumentation', code: 'EE304', fac: 'Mr. P. Ravi Teja' },
-      { p: 2, sub: 'Electromagnetic Fields', code: 'EE303', fac: 'Dr. S. Ranganath' },
-      { p: 3, sub: 'Control Systems', code: 'EE302', fac: 'Mr. P. Ravi Teja' },
-      { p: 4, sub: 'Power Systems', code: 'EE301', fac: 'Dr. S. Ranganath' },
-      { p: 5, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-    ], lab: { sub: 'Control Systems Lab', code: 'EE302L', fac: 'Mr. P. Ravi Teja' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-      { p: 2, sub: 'Power Systems', code: 'EE301', fac: 'Dr. S. Ranganath' },
-      { p: 3, sub: 'Electromagnetic Fields', code: 'EE303', fac: 'Dr. S. Ranganath' },
-      { p: 4, sub: 'Control Systems', code: 'EE302', fac: 'Mr. P. Ravi Teja' },
-      { p: 5, sub: 'Measurements & Instrumentation', code: 'EE304', fac: 'Mr. P. Ravi Teja' },
-    ] },
-  ])
-}
-
-function yearIIISemIIT(): SlotDraft[] {
-  return buildWeek('IT-301', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Computer Networks', code: 'IT301', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Software Engineering', code: 'IT302', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'Web Technologies', code: 'IT303', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Information Security', code: 'IT304', fac: 'Dr. Hema Latha' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Web Technologies', code: 'IT303', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Computer Networks', code: 'IT301', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'Information Security', code: 'IT304', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-      { p: 5, sub: 'Software Engineering', code: 'IT302', fac: 'Dr. Hema Latha' },
-    ], lab: { sub: 'Web Technologies Lab', code: 'IT303L', fac: 'Dr. Hema Latha' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Software Engineering', code: 'IT302', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-      { p: 3, sub: 'Computer Networks', code: 'IT301', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'Information Security', code: 'IT304', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Web Technologies', code: 'IT303', fac: 'Dr. Hema Latha' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Information Security', code: 'IT304', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Web Technologies', code: 'IT303', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'Software Engineering', code: 'IT302', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'Computer Networks', code: 'IT301', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-    ], lab: { sub: 'Networks Lab', code: 'IT301L', fac: 'Dr. Hema Latha' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-      { p: 2, sub: 'Computer Networks', code: 'IT301', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'Web Technologies', code: 'IT303', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'Software Engineering', code: 'IT302', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Information Security', code: 'IT304', fac: 'Dr. Hema Latha' },
-    ] },
-  ])
-}
-
-function yearIIISemICivil(): SlotDraft[] {
-  return buildWeek('Civil-201', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Structural Analysis', code: 'CV301', fac: 'Dr. L. Mahesh' },
-      { p: 2, sub: 'Geotechnical Engineering', code: 'CV302', fac: 'Dr. L. Mahesh' },
-      { p: 3, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'Fluid Mechanics', code: 'CV303', fac: 'Dr. L. Mahesh' },
-      { p: 5, sub: 'Transportation Engineering', code: 'CV304', fac: 'Dr. L. Mahesh' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Fluid Mechanics', code: 'CV303', fac: 'Dr. L. Mahesh' },
-      { p: 2, sub: 'Structural Analysis', code: 'CV301', fac: 'Dr. L. Mahesh' },
-      { p: 3, sub: 'Transportation Engineering', code: 'CV304', fac: 'Dr. L. Mahesh' },
-      { p: 4, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-      { p: 5, sub: 'Geotechnical Engineering', code: 'CV302', fac: 'Dr. L. Mahesh' },
-    ], lab: { sub: 'Geotechnical Engineering Lab', code: 'CV302L', fac: 'Dr. L. Mahesh' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Geotechnical Engineering', code: 'CV302', fac: 'Dr. L. Mahesh' },
-      { p: 2, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-      { p: 3, sub: 'Structural Analysis', code: 'CV301', fac: 'Dr. L. Mahesh' },
-      { p: 4, sub: 'Transportation Engineering', code: 'CV304', fac: 'Dr. L. Mahesh' },
-      { p: 5, sub: 'Fluid Mechanics', code: 'CV303', fac: 'Dr. L. Mahesh' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Transportation Engineering', code: 'CV304', fac: 'Dr. L. Mahesh' },
-      { p: 2, sub: 'Fluid Mechanics', code: 'CV303', fac: 'Dr. L. Mahesh' },
-      { p: 3, sub: 'Geotechnical Engineering', code: 'CV302', fac: 'Dr. L. Mahesh' },
-      { p: 4, sub: 'Structural Analysis', code: 'CV301', fac: 'Dr. L. Mahesh' },
-      { p: 5, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-    ], lab: { sub: 'Fluid Mechanics Lab', code: 'CV303L', fac: 'Dr. L. Mahesh' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-      { p: 2, sub: 'Structural Analysis', code: 'CV301', fac: 'Dr. L. Mahesh' },
-      { p: 3, sub: 'Fluid Mechanics', code: 'CV303', fac: 'Dr. L. Mahesh' },
-      { p: 4, sub: 'Geotechnical Engineering', code: 'CV302', fac: 'Dr. L. Mahesh' },
-      { p: 5, sub: 'Transportation Engineering', code: 'CV304', fac: 'Dr. L. Mahesh' },
-    ] },
-  ])
-}
-
-function yearIIISemIMech(): SlotDraft[] {
-  return buildWeek('Mech-101', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Manufacturing Technology', code: 'ME301', fac: 'Mr. K. Suresh' },
-      { p: 2, sub: 'Machine Design', code: 'ME302', fac: 'Mr. K. Suresh' },
-      { p: 3, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'Heat Transfer', code: 'ME303', fac: 'Mr. K. Suresh' },
-      { p: 5, sub: 'CAD/CAM', code: 'ME304', fac: 'Mr. K. Suresh' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Heat Transfer', code: 'ME303', fac: 'Mr. K. Suresh' },
-      { p: 2, sub: 'Manufacturing Technology', code: 'ME301', fac: 'Mr. K. Suresh' },
-      { p: 3, sub: 'CAD/CAM', code: 'ME304', fac: 'Mr. K. Suresh' },
-      { p: 4, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-      { p: 5, sub: 'Machine Design', code: 'ME302', fac: 'Mr. K. Suresh' },
-    ], lab: { sub: 'CAD/CAM Lab', code: 'ME304L', fac: 'Mr. K. Suresh' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Machine Design', code: 'ME302', fac: 'Mr. K. Suresh' },
-      { p: 2, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-      { p: 3, sub: 'Manufacturing Technology', code: 'ME301', fac: 'Mr. K. Suresh' },
-      { p: 4, sub: 'CAD/CAM', code: 'ME304', fac: 'Mr. K. Suresh' },
-      { p: 5, sub: 'Heat Transfer', code: 'ME303', fac: 'Mr. K. Suresh' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'CAD/CAM', code: 'ME304', fac: 'Mr. K. Suresh' },
-      { p: 2, sub: 'Heat Transfer', code: 'ME303', fac: 'Mr. K. Suresh' },
-      { p: 3, sub: 'Machine Design', code: 'ME302', fac: 'Mr. K. Suresh' },
-      { p: 4, sub: 'Manufacturing Technology', code: 'ME301', fac: 'Mr. K. Suresh' },
-      { p: 5, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-    ], lab: { sub: 'Manufacturing Technology Lab', code: 'ME301L', fac: 'Mr. K. Suresh' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Probability & Statistics', code: 'MA301', fac: 'Dr. K. Sridevi' },
-      { p: 2, sub: 'Manufacturing Technology', code: 'ME301', fac: 'Mr. K. Suresh' },
-      { p: 3, sub: 'Heat Transfer', code: 'ME303', fac: 'Mr. K. Suresh' },
-      { p: 4, sub: 'Machine Design', code: 'ME302', fac: 'Mr. K. Suresh' },
-      { p: 5, sub: 'CAD/CAM', code: 'ME304', fac: 'Mr. K. Suresh' },
-    ] },
-  ])
-}
-
-// ============================================================================
-//  YEAR III — SEMESTER II (BRANCH-SPECIFIC)
-// ============================================================================
-
-function yearIIISemIICSE(): SlotDraft[] {
-  return buildWeek('CSE-301', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Compiler Design', code: 'CS305', fac: 'Dr. A. Ramesh' },
-      { p: 2, sub: 'Computer Networks', code: 'CS306', fac: 'Mrs. S. Priya' },
-      { p: 3, sub: 'Theory of Computation', code: 'CS307', fac: 'Mr. T. Vijay' },
-      { p: 4, sub: 'Software Engineering', code: 'CS308', fac: 'Dr. A. Ramesh' },
-      { p: 5, sub: 'Professional Elective – I', code: 'CS3XX', fac: 'Dr. R. Kiran' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Software Engineering', code: 'CS308', fac: 'Dr. A. Ramesh' },
-      { p: 2, sub: 'Compiler Design', code: 'CS305', fac: 'Dr. A. Ramesh' },
-      { p: 3, sub: 'Computer Networks', code: 'CS306', fac: 'Mrs. S. Priya' },
-      { p: 4, sub: 'Theory of Computation', code: 'CS307', fac: 'Mr. T. Vijay' },
-      { p: 5, sub: 'Professional Elective – I', code: 'CS3XX', fac: 'Dr. R. Kiran' },
-    ], lab: { sub: 'CN Lab', code: 'CS306L', fac: 'Mrs. S. Priya' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Computer Networks', code: 'CS306', fac: 'Mrs. S. Priya' },
-      { p: 2, sub: 'Theory of Computation', code: 'CS307', fac: 'Mr. T. Vijay' },
-      { p: 3, sub: 'Compiler Design', code: 'CS305', fac: 'Dr. A. Ramesh' },
-      { p: 4, sub: 'Professional Elective – I', code: 'CS3XX', fac: 'Dr. R. Kiran' },
-      { p: 5, sub: 'Software Engineering', code: 'CS308', fac: 'Dr. A. Ramesh' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Theory of Computation', code: 'CS307', fac: 'Mr. T. Vijay' },
-      { p: 2, sub: 'Professional Elective – I', code: 'CS3XX', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Compiler Design', code: 'CS305', fac: 'Dr. A. Ramesh' },
-      { p: 4, sub: 'Computer Networks', code: 'CS306', fac: 'Mrs. S. Priya' },
-      { p: 5, sub: 'Software Engineering', code: 'CS308', fac: 'Dr. A. Ramesh' },
-    ], lab: { sub: 'Compiler Design Lab', code: 'CS305L', fac: 'Dr. A. Ramesh' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Compiler Design', code: 'CS305', fac: 'Dr. A. Ramesh' },
-      { p: 2, sub: 'Computer Networks', code: 'CS306', fac: 'Mrs. S. Priya' },
-      { p: 3, sub: 'Theory of Computation', code: 'CS307', fac: 'Mr. T. Vijay' },
-      { p: 4, sub: 'Software Engineering', code: 'CS308', fac: 'Dr. A. Ramesh' },
-      { p: 5, sub: 'Professional Elective – I', code: 'CS3XX', fac: 'Dr. R. Kiran' },
-    ] },
-  ])
-}
-
-function yearIIISemIICSEAIML(): SlotDraft[] {
-  return buildWeek('CSE-AIML-401', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Natural Language Processing', code: 'AIML304', fac: 'Dr. R. Kiran' },
-      { p: 2, sub: 'Reinforcement Learning', code: 'AIML305', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Computer Vision', code: 'AIML303', fac: 'Dr. R. Kiran' },
-      { p: 4, sub: 'Operating Systems', code: 'CS303', fac: 'Mr. T. Vijay' },
-      { p: 5, sub: 'Professional Elective – I', code: 'AIML3XX', fac: 'Dr. R. Kiran' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Operating Systems', code: 'CS303', fac: 'Mr. T. Vijay' },
-      { p: 2, sub: 'Natural Language Processing', code: 'AIML304', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Professional Elective – I', code: 'AIML3XX', fac: 'Dr. R. Kiran' },
-      { p: 4, sub: 'Reinforcement Learning', code: 'AIML305', fac: 'Dr. R. Kiran' },
-      { p: 5, sub: 'Computer Vision', code: 'AIML303', fac: 'Dr. R. Kiran' },
-    ], lab: { sub: 'NLP Lab', code: 'AIML304L', fac: 'Dr. R. Kiran' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Reinforcement Learning', code: 'AIML305', fac: 'Dr. R. Kiran' },
-      { p: 2, sub: 'Computer Vision', code: 'AIML303', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Natural Language Processing', code: 'AIML304', fac: 'Dr. R. Kiran' },
-      { p: 4, sub: 'Professional Elective – I', code: 'AIML3XX', fac: 'Dr. R. Kiran' },
-      { p: 5, sub: 'Operating Systems', code: 'CS303', fac: 'Mr. T. Vijay' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Computer Vision', code: 'AIML303', fac: 'Dr. R. Kiran' },
-      { p: 2, sub: 'Professional Elective – I', code: 'AIML3XX', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Operating Systems', code: 'CS303', fac: 'Mr. T. Vijay' },
-      { p: 4, sub: 'Natural Language Processing', code: 'AIML304', fac: 'Dr. R. Kiran' },
-      { p: 5, sub: 'Reinforcement Learning', code: 'AIML305', fac: 'Dr. R. Kiran' },
-    ], lab: { sub: 'Computer Vision Lab', code: 'AIML303L', fac: 'Dr. R. Kiran' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Natural Language Processing', code: 'AIML304', fac: 'Dr. R. Kiran' },
-      { p: 2, sub: 'Reinforcement Learning', code: 'AIML305', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Operating Systems', code: 'CS303', fac: 'Mr. T. Vijay' },
-      { p: 4, sub: 'Computer Vision', code: 'AIML303', fac: 'Dr. R. Kiran' },
-      { p: 5, sub: 'Professional Elective – I', code: 'AIML3XX', fac: 'Dr. R. Kiran' },
-    ] },
-  ])
+function yearIIISemIUnitAimlDs(room: string): SlotDraft[] {
+  return makeWeek(
+    room,
+    [
+      { sub: 'Computer Vision', code: 'AI501PC', fac: 'Dr. R. Kiran' },
+      { sub: 'Reinforcement Learning', code: 'AI502PC', fac: 'Dr. R. Kiran' },
+      { sub: 'Expert Systems', code: 'AI503PC', fac: 'Dr. R. Kiran' },
+      { sub: 'Professional Elective - I', code: 'PE-I', fac: 'Dr. R. Kiran' },
+      { sub: 'Open Elective - I', code: 'OE-I', fac: 'Dr. Hema Latha' },
+    ],
+    {
+      1: { sub: 'Computer Vision Lab', code: 'AI504PC', fac: 'Dr. R. Kiran' },
+      3: { sub: 'Reinforcement Learning Lab', code: 'AI505PC', fac: 'Dr. R. Kiran' },
+      4: { sub: 'Prompt Engineering', code: 'AI506SD', fac: 'Dr. Hema Latha' },
+    },
+    {
+      5: { 5: { sub: 'Indian Knowledge System', code: 'VA500HS', fac: 'Mrs. N. Lavanya' } },
+    }
+  )
 }
 
 function yearIIISemIICSECSBS(): SlotDraft[] {
-  return buildWeek('CSE-CSBS-402', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Business Analytics', code: 'CSBS304', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Financial Accounting', code: 'CSBS302', fac: 'Mrs. N. Lavanya' },
-      { p: 3, sub: 'Business Statistics', code: 'CSBS303', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'Data Analytics', code: 'CSBS301', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Professional Elective – I', code: 'CSBS3XX', fac: 'Mrs. N. Lavanya' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Data Analytics', code: 'CSBS301', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Business Analytics', code: 'CSBS304', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'Professional Elective – I', code: 'CSBS3XX', fac: 'Mrs. N. Lavanya' },
-      { p: 4, sub: 'Business Statistics', code: 'CSBS303', fac: 'Dr. K. Sridevi' },
-      { p: 5, sub: 'Financial Accounting', code: 'CSBS302', fac: 'Mrs. N. Lavanya' },
-    ], lab: { sub: 'Business Analytics Lab', code: 'CSBS304L', fac: 'Dr. Hema Latha' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Financial Accounting', code: 'CSBS302', fac: 'Mrs. N. Lavanya' },
-      { p: 2, sub: 'Business Statistics', code: 'CSBS303', fac: 'Dr. K. Sridevi' },
-      { p: 3, sub: 'Business Analytics', code: 'CSBS304', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'Professional Elective – I', code: 'CSBS3XX', fac: 'Mrs. N. Lavanya' },
-      { p: 5, sub: 'Data Analytics', code: 'CSBS301', fac: 'Dr. Hema Latha' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Business Statistics', code: 'CSBS303', fac: 'Dr. K. Sridevi' },
-      { p: 2, sub: 'Professional Elective – I', code: 'CSBS3XX', fac: 'Mrs. N. Lavanya' },
-      { p: 3, sub: 'Data Analytics', code: 'CSBS301', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'Business Analytics', code: 'CSBS304', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Financial Accounting', code: 'CSBS302', fac: 'Mrs. N. Lavanya' },
-    ], lab: { sub: 'Data Analytics Lab', code: 'CSBS301L', fac: 'Dr. Hema Latha' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Business Analytics', code: 'CSBS304', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Data Analytics', code: 'CSBS301', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'Financial Accounting', code: 'CSBS302', fac: 'Mrs. N. Lavanya' },
-      { p: 4, sub: 'Business Statistics', code: 'CSBS303', fac: 'Dr. K. Sridevi' },
-      { p: 5, sub: 'Professional Elective – I', code: 'CSBS3XX', fac: 'Mrs. N. Lavanya' },
-    ] },
-  ])
+  return makeWeek(
+    'CSE-CSBS-402',
+    [
+      { sub: 'Automata Theory & Compiler Design', code: 'CB501PC', fac: 'Dr. A. Ramesh' },
+      { sub: 'Web Technologies', code: 'CB502PC', fac: 'Dr. Hema Latha' },
+      { sub: 'Business Analytics', code: 'CB503PC', fac: 'Dr. Hema Latha' },
+      { sub: 'Professional Elective - I', code: 'PE-I', fac: 'Dr. Hema Latha' },
+      { sub: 'Open Elective - I', code: 'OE-I', fac: 'Mrs. N. Lavanya' },
+    ],
+    {
+      1: { sub: 'Web Technologies Lab', code: 'CB504PC', fac: 'Dr. Hema Latha' },
+      3: { sub: 'Business Analytics Lab', code: 'CB505PC', fac: 'Dr. Hema Latha' },
+      4: { sub: 'Full Stack Development Lab', code: 'CB506SD', fac: 'Dr. Hema Latha' },
+    },
+    {
+      5: { 5: { sub: 'Indian Knowledge System', code: 'VA500HS', fac: 'Mrs. N. Lavanya' } },
+    }
+  )
 }
 
-function yearIIISemIICSEDS(): SlotDraft[] {
-  return buildWeek('CSE-DS-403', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Data Mining', code: 'DS301', fac: 'Dr. R. Kiran' },
-      { p: 2, sub: 'Big Data Technologies', code: 'DS302', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'Advanced Statistics', code: 'MA302', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'Machine Learning', code: 'AIML301', fac: 'Dr. R. Kiran' },
-      { p: 5, sub: 'Professional Elective – I', code: 'DS3XX', fac: 'Dr. R. Kiran' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Machine Learning', code: 'AIML301', fac: 'Dr. R. Kiran' },
-      { p: 2, sub: 'Data Mining', code: 'DS301', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Professional Elective – I', code: 'DS3XX', fac: 'Dr. R. Kiran' },
-      { p: 4, sub: 'Big Data Technologies', code: 'DS302', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Advanced Statistics', code: 'MA302', fac: 'Dr. K. Sridevi' },
-    ], lab: { sub: 'Big Data Lab', code: 'DS302L', fac: 'Dr. Hema Latha' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Big Data Technologies', code: 'DS302', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Advanced Statistics', code: 'MA302', fac: 'Dr. K. Sridevi' },
-      { p: 3, sub: 'Data Mining', code: 'DS301', fac: 'Dr. R. Kiran' },
-      { p: 4, sub: 'Professional Elective – I', code: 'DS3XX', fac: 'Dr. R. Kiran' },
-      { p: 5, sub: 'Machine Learning', code: 'AIML301', fac: 'Dr. R. Kiran' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Advanced Statistics', code: 'MA302', fac: 'Dr. K. Sridevi' },
-      { p: 2, sub: 'Professional Elective – I', code: 'DS3XX', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Machine Learning', code: 'AIML301', fac: 'Dr. R. Kiran' },
-      { p: 4, sub: 'Data Mining', code: 'DS301', fac: 'Dr. R. Kiran' },
-      { p: 5, sub: 'Big Data Technologies', code: 'DS302', fac: 'Dr. Hema Latha' },
-    ], lab: { sub: 'Data Mining Lab', code: 'DS301L', fac: 'Dr. R. Kiran' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Data Mining', code: 'DS301', fac: 'Dr. R. Kiran' },
-      { p: 2, sub: 'Big Data Technologies', code: 'DS302', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'Advanced Statistics', code: 'MA302', fac: 'Dr. K. Sridevi' },
-      { p: 4, sub: 'Machine Learning', code: 'AIML301', fac: 'Dr. R. Kiran' },
-      { p: 5, sub: 'Professional Elective – I', code: 'DS3XX', fac: 'Dr. R. Kiran' },
-    ] },
-  ])
+function yearIIISemIIT(): SlotDraft[] {
+  return makeWeek(
+    'IT-301',
+    [
+      { sub: 'Machine Learning', code: 'CI501PC', fac: 'Dr. R. Kiran' },
+      { sub: 'Information Security', code: 'CI502PC', fac: 'Dr. Hema Latha' },
+      { sub: 'Web Technologies', code: 'CI503PC', fac: 'Dr. Hema Latha' },
+      { sub: 'Professional Elective - I', code: 'PE-I', fac: 'Dr. Hema Latha' },
+      { sub: 'Open Elective - I', code: 'OE-I', fac: 'Dr. R. Kiran' },
+    ],
+    {
+      1: { sub: 'Machine Learning Lab', code: 'CI504PC', fac: 'Dr. R. Kiran' },
+      3: { sub: 'Information Security Lab', code: 'CI505PC', fac: 'Dr. Hema Latha' },
+      4: { sub: 'Full Stack Development Lab', code: 'CI506SD', fac: 'Dr. Hema Latha' },
+    },
+    {
+      5: { 5: { sub: 'Indian Knowledge System', code: 'VA500HS', fac: 'Mrs. N. Lavanya' } },
+    }
+  )
 }
 
-function yearIIISemIIECE(): SlotDraft[] {
-  return buildWeek('ECE-201', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Digital Signal Processing', code: 'EC305', fac: 'Dr. G. Narsimha' },
-      { p: 2, sub: 'Digital Communication', code: 'EC306', fac: 'Mrs. R. Sujatha' },
-      { p: 3, sub: 'Embedded Systems', code: 'EC307', fac: 'Dr. G. Narsimha' },
-      { p: 4, sub: 'Microwave Engineering', code: 'EC308', fac: 'Mrs. R. Sujatha' },
-      { p: 5, sub: 'Professional Elective – I', code: 'EC3XX', fac: 'Dr. G. Narsimha' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Microwave Engineering', code: 'EC308', fac: 'Mrs. R. Sujatha' },
-      { p: 2, sub: 'Digital Signal Processing', code: 'EC305', fac: 'Dr. G. Narsimha' },
-      { p: 3, sub: 'Professional Elective – I', code: 'EC3XX', fac: 'Dr. G. Narsimha' },
-      { p: 4, sub: 'Digital Communication', code: 'EC306', fac: 'Mrs. R. Sujatha' },
-      { p: 5, sub: 'Embedded Systems', code: 'EC307', fac: 'Dr. G. Narsimha' },
-    ], lab: { sub: 'DSP Lab', code: 'EC305L', fac: 'Dr. G. Narsimha' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Digital Communication', code: 'EC306', fac: 'Mrs. R. Sujatha' },
-      { p: 2, sub: 'Embedded Systems', code: 'EC307', fac: 'Dr. G. Narsimha' },
-      { p: 3, sub: 'Digital Signal Processing', code: 'EC305', fac: 'Dr. G. Narsimha' },
-      { p: 4, sub: 'Professional Elective – I', code: 'EC3XX', fac: 'Dr. G. Narsimha' },
-      { p: 5, sub: 'Microwave Engineering', code: 'EC308', fac: 'Mrs. R. Sujatha' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Embedded Systems', code: 'EC307', fac: 'Dr. G. Narsimha' },
-      { p: 2, sub: 'Professional Elective – I', code: 'EC3XX', fac: 'Dr. G. Narsimha' },
-      { p: 3, sub: 'Microwave Engineering', code: 'EC308', fac: 'Mrs. R. Sujatha' },
-      { p: 4, sub: 'Digital Signal Processing', code: 'EC305', fac: 'Dr. G. Narsimha' },
-      { p: 5, sub: 'Digital Communication', code: 'EC306', fac: 'Mrs. R. Sujatha' },
-    ], lab: { sub: 'Digital Communication Lab', code: 'EC306L', fac: 'Mrs. R. Sujatha' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Digital Signal Processing', code: 'EC305', fac: 'Dr. G. Narsimha' },
-      { p: 2, sub: 'Digital Communication', code: 'EC306', fac: 'Mrs. R. Sujatha' },
-      { p: 3, sub: 'Embedded Systems', code: 'EC307', fac: 'Dr. G. Narsimha' },
-      { p: 4, sub: 'Microwave Engineering', code: 'EC308', fac: 'Mrs. R. Sujatha' },
-      { p: 5, sub: 'Professional Elective – I', code: 'EC3XX', fac: 'Dr. G. Narsimha' },
-    ] },
-  ])
+function yearIIISemIECE(): SlotDraft[] {
+  return makeWeek(
+    'ECE-201',
+    [
+      { sub: 'Control Systems', code: 'EC501PC', fac: 'Mrs. R. Sujatha' },
+      { sub: 'Digital Communication', code: 'EC502PC', fac: 'Dr. G. Narsimha' },
+      { sub: 'Computer Architecture', code: 'EC503PC', fac: 'Dr. G. Narsimha' },
+      { sub: 'Professional Elective - I', code: 'PE-I', fac: 'Mrs. R. Sujatha' },
+      { sub: 'Open Elective - I', code: 'OE-I', fac: 'Dr. G. Narsimha' },
+    ],
+    {
+      1: { sub: 'Control Systems Lab', code: 'EC504PC', fac: 'Mrs. R. Sujatha' },
+      3: { sub: 'Digital Communication Lab', code: 'EC505PC', fac: 'Dr. G. Narsimha' },
+      4: { sub: 'Embedded Systems Lab', code: 'EC506SD', fac: 'Mrs. R. Sujatha' },
+    },
+    {
+      5: { 5: { sub: 'Indian Knowledge System', code: 'VA500HS', fac: 'Mrs. N. Lavanya' } },
+    }
+  )
 }
 
-function yearIIISemIIEEEEEE(): SlotDraft[] {
-  return buildWeek('EEE-101', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Power Systems – II', code: 'EE305', fac: 'Dr. S. Ranganath' },
-      { p: 2, sub: 'Digital Control Systems', code: 'EE306', fac: 'Mr. P. Ravi Teja' },
-      { p: 3, sub: 'Switchgear & Protection', code: 'EE307', fac: 'Dr. S. Ranganath' },
-      { p: 4, sub: 'Power Electronics', code: 'EE308', fac: 'Mr. P. Ravi Teja' },
-      { p: 5, sub: 'Professional Elective – I', code: 'EE3XX', fac: 'Dr. S. Ranganath' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Power Electronics', code: 'EE308', fac: 'Mr. P. Ravi Teja' },
-      { p: 2, sub: 'Power Systems – II', code: 'EE305', fac: 'Dr. S. Ranganath' },
-      { p: 3, sub: 'Professional Elective – I', code: 'EE3XX', fac: 'Dr. S. Ranganath' },
-      { p: 4, sub: 'Digital Control Systems', code: 'EE306', fac: 'Mr. P. Ravi Teja' },
-      { p: 5, sub: 'Switchgear & Protection', code: 'EE307', fac: 'Dr. S. Ranganath' },
-    ], lab: { sub: 'Power Electronics Lab', code: 'EE308L', fac: 'Mr. P. Ravi Teja' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Digital Control Systems', code: 'EE306', fac: 'Mr. P. Ravi Teja' },
-      { p: 2, sub: 'Switchgear & Protection', code: 'EE307', fac: 'Dr. S. Ranganath' },
-      { p: 3, sub: 'Power Systems – II', code: 'EE305', fac: 'Dr. S. Ranganath' },
-      { p: 4, sub: 'Professional Elective – I', code: 'EE3XX', fac: 'Dr. S. Ranganath' },
-      { p: 5, sub: 'Power Electronics', code: 'EE308', fac: 'Mr. P. Ravi Teja' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Switchgear & Protection', code: 'EE307', fac: 'Dr. S. Ranganath' },
-      { p: 2, sub: 'Professional Elective – I', code: 'EE3XX', fac: 'Dr. S. Ranganath' },
-      { p: 3, sub: 'Power Electronics', code: 'EE308', fac: 'Mr. P. Ravi Teja' },
-      { p: 4, sub: 'Power Systems – II', code: 'EE305', fac: 'Dr. S. Ranganath' },
-      { p: 5, sub: 'Digital Control Systems', code: 'EE306', fac: 'Mr. P. Ravi Teja' },
-    ], lab: { sub: 'Control Systems Lab', code: 'EE302L', fac: 'Mr. P. Ravi Teja' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Power Systems – II', code: 'EE305', fac: 'Dr. S. Ranganath' },
-      { p: 2, sub: 'Digital Control Systems', code: 'EE306', fac: 'Mr. P. Ravi Teja' },
-      { p: 3, sub: 'Switchgear & Protection', code: 'EE307', fac: 'Dr. S. Ranganath' },
-      { p: 4, sub: 'Power Electronics', code: 'EE308', fac: 'Mr. P. Ravi Teja' },
-      { p: 5, sub: 'Professional Elective – I', code: 'EE3XX', fac: 'Dr. S. Ranganath' },
-    ] },
-  ])
+function yearIIISemIEEEEEE(): SlotDraft[] {
+  return makeWeek(
+    'EEE-101',
+    [
+      { sub: 'Power Electronics', code: 'EE501PC', fac: 'Mr. P. Ravi Teja' },
+      { sub: 'Microprocessors & Microcontrollers', code: 'EE502PC', fac: 'Dr. S. Ranganath' },
+      { sub: 'Power System Protection', code: 'EE503PC', fac: 'Dr. S. Ranganath' },
+      { sub: 'Professional Elective - I', code: 'PE-I', fac: 'Mr. P. Ravi Teja' },
+      { sub: 'Open Elective - I', code: 'OE-I', fac: 'Dr. S. Ranganath' },
+    ],
+    {
+      1: { sub: 'Power Electronics Lab', code: 'EE504PC', fac: 'Mr. P. Ravi Teja' },
+      3: { sub: 'Microprocessors Lab', code: 'EE505PC', fac: 'Dr. S. Ranganath' },
+      4: { sub: 'PCB Design / FPGA Fundamentals', code: 'EE506SD', fac: 'Mr. P. Ravi Teja' },
+    },
+    {
+      5: { 5: { sub: 'Indian Knowledge System', code: 'VA500HS', fac: 'Mrs. N. Lavanya' } },
+    }
+  )
+}
+
+function yearIIISemICivil(): SlotDraft[] {
+  return makeWeek(
+    'Civil-201',
+    [
+      { sub: 'Reinforced Concrete Design', code: 'CV501PC', fac: 'Dr. L. Mahesh' },
+      { sub: 'Soil Mechanics', code: 'CV502PC', fac: 'Dr. L. Mahesh' },
+      { sub: 'Environmental Engineering', code: 'CV503PC', fac: 'Dr. L. Mahesh' },
+      { sub: 'Professional Elective - I', code: 'PE-I', fac: 'Dr. L. Mahesh' },
+      { sub: 'Open Elective - I', code: 'OE-I', fac: 'Dr. L. Mahesh' },
+    ],
+    {
+      1: { sub: 'RCC Design Lab', code: 'CV504PC', fac: 'Dr. L. Mahesh' },
+      3: { sub: 'Soil Mechanics Lab', code: 'CV505PC', fac: 'Dr. L. Mahesh' },
+      4: { sub: 'Environmental Engineering Lab', code: 'CV506PC', fac: 'Dr. L. Mahesh' },
+    },
+    {
+      5: { 5: { sub: 'Indian Knowledge System', code: 'VA500HS', fac: 'Mrs. N. Lavanya' } },
+    }
+  )
+}
+
+function yearIIISemIMech(): SlotDraft[] {
+  return makeWeek(
+    'Mech-101',
+    [
+      { sub: 'Machine Design', code: 'ME501PC', fac: 'Mr. K. Suresh' },
+      { sub: 'CAD/CAM', code: 'ME502PC', fac: 'Mr. K. Suresh' },
+      { sub: 'Automation & Robotics', code: 'ME503PC', fac: 'Mr. K. Suresh' },
+      { sub: 'Professional Elective - I', code: 'PE-I', fac: 'Mr. K. Suresh' },
+      { sub: 'Open Elective - I', code: 'OE-I', fac: 'Mr. K. Suresh' },
+    ],
+    {
+      1: { sub: 'Machine Design Lab', code: 'ME504PC', fac: 'Mr. K. Suresh' },
+      3: { sub: 'CAD/CAM Lab', code: 'ME505PC', fac: 'Mr. K. Suresh' },
+      4: { sub: 'IoT Lab', code: 'ME506SD', fac: 'Mr. K. Suresh' },
+    },
+    {
+      5: { 5: { sub: 'Indian Knowledge System', code: 'VA500HS', fac: 'Mrs. N. Lavanya' } },
+    }
+  )
+}
+
+// ============================================================================
+//  YEAR III — SEMESTER II (JNTUH R25)
+// ============================================================================
+
+function yearIIISemIICSE(): SlotDraft[] {
+  return makeWeek(
+    'CSE-301',
+    [
+      { sub: 'Cryptography & Network Security', code: 'CS601PC', fac: 'Mrs. S. Priya' },
+      { sub: 'Deep Learning', code: 'CS602PC', fac: 'Dr. R. Kiran' },
+      { sub: 'Business Economics & Financial Analysis', code: 'MS603HS', fac: 'Mrs. N. Lavanya' },
+      { sub: 'Professional Elective - II', code: 'PE-II', fac: 'Dr. A. Ramesh' },
+      { sub: 'Open Elective - II', code: 'OE-II', fac: 'Mr. T. Vijay' },
+    ],
+    {
+      1: { sub: 'Cryptography & Network Security Lab', code: 'CS604PC', fac: 'Mrs. S. Priya' },
+      2: { sub: 'Deep Learning Lab', code: 'CS605PC', fac: 'Dr. R. Kiran' },
+      3: { sub: 'Full Stack Development Lab', code: 'CS606SD', fac: 'Mr. T. Vijay' },
+      4: { sub: 'English for Employability Skills Lab', code: 'EN607HS', fac: 'Mr. V. Ravi Kumar' },
+      5: { sub: 'Cloud Computing', code: 'CS608SD', fac: 'Dr. Hema Latha' },
+    },
+    {
+      2: { 5: { sub: 'Environmental Science', code: 'VA600ES', fac: 'Mrs. N. Lavanya' } },
+    }
+  )
+}
+
+function yearIIISemIIUnitAimlDs(room: string): SlotDraft[] {
+  return makeWeek(
+    room,
+    [
+      { sub: 'Natural Language Processing', code: 'AI601PC', fac: 'Dr. R. Kiran' },
+      { sub: 'Deep Learning', code: 'AI602PC', fac: 'Dr. R. Kiran' },
+      { sub: 'Business Economics & Financial Analysis', code: 'MS603HS', fac: 'Mrs. N. Lavanya' },
+      { sub: 'Professional Elective - II', code: 'PE-II', fac: 'Dr. R. Kiran' },
+      { sub: 'Open Elective - II', code: 'OE-II', fac: 'Dr. Hema Latha' },
+    ],
+    {
+      1: { sub: 'NLP Lab', code: 'AI604PC', fac: 'Dr. R. Kiran' },
+      2: { sub: 'Deep Learning Lab', code: 'AI605PC', fac: 'Dr. R. Kiran' },
+      3: { sub: 'Chatbots Lab', code: 'AI606PC', fac: 'Dr. Hema Latha' },
+      4: { sub: 'Advanced English Communication Skills Lab', code: 'EN607HS', fac: 'Mr. V. Ravi Kumar' },
+      5: { sub: 'Prompt Engineering', code: 'AI608SD', fac: 'Dr. Hema Latha' },
+    },
+    {
+      2: { 5: { sub: 'Environmental Science', code: 'VA600ES', fac: 'Mrs. N. Lavanya' } },
+    }
+  )
+}
+
+function yearIIISemIICSECSBS(): SlotDraft[] {
+  return makeWeek(
+    'CSE-CSBS-402',
+    [
+      { sub: 'Machine Learning', code: 'CB601PC', fac: 'Dr. R. Kiran' },
+      { sub: 'Operations Research', code: 'CB602PC', fac: 'Dr. K. Sridevi' },
+      { sub: 'Business Economics & Financial Analysis', code: 'MS603HS', fac: 'Mrs. N. Lavanya' },
+      { sub: 'Professional Elective - II', code: 'PE-II', fac: 'Dr. Hema Latha' },
+      { sub: 'Open Elective - II', code: 'OE-II', fac: 'Dr. A. Ramesh' },
+    ],
+    {
+      1: { sub: 'Operations Research Lab', code: 'CB604PC', fac: 'Dr. K. Sridevi' },
+      2: { sub: 'Linux Programming Lab', code: 'CB605PC', fac: 'Dr. Hema Latha' },
+      3: { sub: 'Machine Learning Lab', code: 'CB606PC', fac: 'Dr. R. Kiran' },
+      4: { sub: 'English for Employability Skills Lab', code: 'EN607HS', fac: 'Mr. V. Ravi Kumar' },
+      5: { sub: 'Big Data Spark', code: 'CB608SD', fac: 'Dr. Hema Latha' },
+    },
+    {
+      2: { 5: { sub: 'Environmental Science', code: 'VA600ES', fac: 'Mrs. N. Lavanya' } },
+    }
+  )
 }
 
 function yearIIISemIIIT(): SlotDraft[] {
-  return buildWeek('IT-301', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Distributed Systems', code: 'IT305', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Software Testing', code: 'IT306', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'Computer Networks', code: 'IT301', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'Information Security', code: 'IT304', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Professional Elective – I', code: 'IT3XX', fac: 'Dr. Hema Latha' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Information Security', code: 'IT304', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Distributed Systems', code: 'IT305', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'Professional Elective – I', code: 'IT3XX', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'Software Testing', code: 'IT306', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Computer Networks', code: 'IT301', fac: 'Dr. Hema Latha' },
-    ], lab: { sub: 'Distributed Systems Lab', code: 'IT305L', fac: 'Dr. Hema Latha' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Software Testing', code: 'IT306', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Computer Networks', code: 'IT301', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'Distributed Systems', code: 'IT305', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'Professional Elective – I', code: 'IT3XX', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Information Security', code: 'IT304', fac: 'Dr. Hema Latha' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Computer Networks', code: 'IT301', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Professional Elective – I', code: 'IT3XX', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'Information Security', code: 'IT304', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'Distributed Systems', code: 'IT305', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Software Testing', code: 'IT306', fac: 'Dr. Hema Latha' },
-    ], lab: { sub: 'Software Testing Lab', code: 'IT306L', fac: 'Dr. Hema Latha' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Distributed Systems', code: 'IT305', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Software Testing', code: 'IT306', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'Computer Networks', code: 'IT301', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'Information Security', code: 'IT304', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Professional Elective – I', code: 'IT3XX', fac: 'Dr. Hema Latha' },
-    ] },
-  ])
+  return makeWeek(
+    'IT-301',
+    [
+      { sub: 'Software Engineering', code: 'CI601PC', fac: 'Dr. Hema Latha' },
+      { sub: 'Compiler Design', code: 'CI602PC', fac: 'Dr. Hema Latha' },
+      { sub: 'Cloud Computing', code: 'CI603PC', fac: 'Dr. Hema Latha' },
+      { sub: 'Professional Elective - II', code: 'PE-II', fac: 'Dr. R. Kiran' },
+      { sub: 'Open Elective - II', code: 'OE-II', fac: 'Dr. Hema Latha' },
+    ],
+    {
+      1: { sub: 'Software Engineering Lab', code: 'CI604PC', fac: 'Dr. Hema Latha' },
+      3: { sub: 'Compiler Design Lab', code: 'CI605PC', fac: 'Dr. Hema Latha' },
+      4: { sub: 'Big Data Spark', code: 'CI606SD', fac: 'Dr. Hema Latha' },
+      5: { sub: 'English for Employability Skills Lab', code: 'EN607HS', fac: 'Mr. V. Ravi Kumar' },
+    },
+    {
+      2: { 5: { sub: 'Environmental Science', code: 'VA600ES', fac: 'Mrs. N. Lavanya' } },
+    }
+  )
+}
+
+function yearIIISemIIECE(): SlotDraft[] {
+  return makeWeek(
+    'ECE-201',
+    [
+      { sub: 'Antenna & Wave Propagation', code: 'EC601PC', fac: 'Dr. G. Narsimha' },
+      { sub: 'Optical Communication', code: 'EC602PC', fac: 'Mrs. R. Sujatha' },
+      { sub: 'Business Economics & Financial Analysis', code: 'MS603HS', fac: 'Mrs. N. Lavanya' },
+      { sub: 'Professional Elective - II', code: 'PE-II', fac: 'Dr. G. Narsimha' },
+      { sub: 'Open Elective - II', code: 'OE-II', fac: 'Mrs. R. Sujatha' },
+    ],
+    {
+      1: { sub: 'Optical Communication Lab', code: 'EC604PC', fac: 'Mrs. R. Sujatha' },
+      3: { sub: 'RF & Microwave Lab', code: 'EC605PC', fac: 'Dr. G. Narsimha' },
+      4: { sub: 'IoT Lab', code: 'EC606SD', fac: 'Mrs. R. Sujatha' },
+      5: { sub: 'English for Employability Skills Lab', code: 'EN607HS', fac: 'Mr. V. Ravi Kumar' },
+    },
+    {
+      2: { 5: { sub: 'Environmental Science', code: 'VA600ES', fac: 'Mrs. N. Lavanya' } },
+    }
+  )
+}
+
+function yearIIISemIIEEEEEE(): SlotDraft[] {
+  return makeWeek(
+    'EEE-101',
+    [
+      { sub: 'Power Semiconductor Drives', code: 'EE601PC', fac: 'Mr. P. Ravi Teja' },
+      { sub: 'Power System Protection', code: 'EE602PC', fac: 'Dr. S. Ranganath' },
+      { sub: 'Business Economics & Financial Analysis', code: 'MS603HS', fac: 'Mrs. N. Lavanya' },
+      { sub: 'Professional Elective - II', code: 'PE-II', fac: 'Mr. P. Ravi Teja' },
+      { sub: 'Open Elective - II', code: 'OE-II', fac: 'Dr. S. Ranganath' },
+    ],
+    {
+      1: { sub: 'Drives Lab', code: 'EE604PC', fac: 'Mr. P. Ravi Teja' },
+      3: { sub: 'Power System Protection Lab', code: 'EE605PC', fac: 'Dr. S. Ranganath' },
+      4: { sub: 'Linux Programming Lab', code: 'EE606SD', fac: 'Mr. P. Ravi Teja' },
+      5: { sub: 'English for Employability Skills Lab', code: 'EN607HS', fac: 'Mr. V. Ravi Kumar' },
+    },
+    {
+      2: { 5: { sub: 'Environmental Science', code: 'VA600ES', fac: 'Mrs. N. Lavanya' } },
+    }
+  )
 }
 
 function yearIIISemIICivil(): SlotDraft[] {
-  return buildWeek('Civil-201', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Design of Steel Structures', code: 'CV305', fac: 'Dr. L. Mahesh' },
-      { p: 2, sub: 'Environmental Engineering', code: 'CV306', fac: 'Dr. L. Mahesh' },
-      { p: 3, sub: 'Estimation & Costing', code: 'CV307', fac: 'Dr. L. Mahesh' },
-      { p: 4, sub: 'Structural Analysis', code: 'CV301', fac: 'Dr. L. Mahesh' },
-      { p: 5, sub: 'Professional Elective – I', code: 'CV3XX', fac: 'Dr. L. Mahesh' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Structural Analysis', code: 'CV301', fac: 'Dr. L. Mahesh' },
-      { p: 2, sub: 'Design of Steel Structures', code: 'CV305', fac: 'Dr. L. Mahesh' },
-      { p: 3, sub: 'Professional Elective – I', code: 'CV3XX', fac: 'Dr. L. Mahesh' },
-      { p: 4, sub: 'Environmental Engineering', code: 'CV306', fac: 'Dr. L. Mahesh' },
-      { p: 5, sub: 'Estimation & Costing', code: 'CV307', fac: 'Dr. L. Mahesh' },
-    ], lab: { sub: 'Structural Analysis Lab', code: 'CV301L', fac: 'Dr. L. Mahesh' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Environmental Engineering', code: 'CV306', fac: 'Dr. L. Mahesh' },
-      { p: 2, sub: 'Estimation & Costing', code: 'CV307', fac: 'Dr. L. Mahesh' },
-      { p: 3, sub: 'Design of Steel Structures', code: 'CV305', fac: 'Dr. L. Mahesh' },
-      { p: 4, sub: 'Professional Elective – I', code: 'CV3XX', fac: 'Dr. L. Mahesh' },
-      { p: 5, sub: 'Structural Analysis', code: 'CV301', fac: 'Dr. L. Mahesh' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Estimation & Costing', code: 'CV307', fac: 'Dr. L. Mahesh' },
-      { p: 2, sub: 'Professional Elective – I', code: 'CV3XX', fac: 'Dr. L. Mahesh' },
-      { p: 3, sub: 'Structural Analysis', code: 'CV301', fac: 'Dr. L. Mahesh' },
-      { p: 4, sub: 'Design of Steel Structures', code: 'CV305', fac: 'Dr. L. Mahesh' },
-      { p: 5, sub: 'Environmental Engineering', code: 'CV306', fac: 'Dr. L. Mahesh' },
-    ], lab: { sub: 'Environmental Engineering Lab', code: 'CV306L', fac: 'Dr. L. Mahesh' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Design of Steel Structures', code: 'CV305', fac: 'Dr. L. Mahesh' },
-      { p: 2, sub: 'Environmental Engineering', code: 'CV306', fac: 'Dr. L. Mahesh' },
-      { p: 3, sub: 'Estimation & Costing', code: 'CV307', fac: 'Dr. L. Mahesh' },
-      { p: 4, sub: 'Structural Analysis', code: 'CV301', fac: 'Dr. L. Mahesh' },
-      { p: 5, sub: 'Professional Elective – I', code: 'CV3XX', fac: 'Dr. L. Mahesh' },
-    ] },
-  ])
+  return makeWeek(
+    'Civil-201',
+    [
+      { sub: 'Design of Steel Structures', code: 'CV601PC', fac: 'Dr. L. Mahesh' },
+      { sub: 'Estimation & Costing', code: 'CV602PC', fac: 'Dr. L. Mahesh' },
+      { sub: 'Business Economics & Financial Analysis', code: 'MS603HS', fac: 'Mrs. N. Lavanya' },
+      { sub: 'Professional Elective - II', code: 'PE-II', fac: 'Dr. L. Mahesh' },
+      { sub: 'Open Elective - II', code: 'OE-II', fac: 'Dr. L. Mahesh' },
+    ],
+    {
+      1: { sub: 'Estimation & Costing Lab', code: 'CV604PC', fac: 'Dr. L. Mahesh' },
+      3: { sub: 'GIS & Remote Sensing Lab', code: 'CV605SD', fac: 'Dr. L. Mahesh' },
+      4: { sub: 'English for Employability Skills Lab', code: 'EN607HS', fac: 'Mr. V. Ravi Kumar' },
+    },
+    {
+      2: { 5: { sub: 'Environmental Science', code: 'VA600ES', fac: 'Mrs. N. Lavanya' } },
+    }
+  )
 }
 
 function yearIIISemIIMech(): SlotDraft[] {
-  return buildWeek('Mech-101', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Dynamics of Machines', code: 'ME305', fac: 'Mr. K. Suresh' },
-      { p: 2, sub: 'Automobile Engineering', code: 'ME306', fac: 'Mr. K. Suresh' },
-      { p: 3, sub: 'Computer Integrated Manufacturing', code: 'ME307', fac: 'Mr. K. Suresh' },
-      { p: 4, sub: 'Heat Transfer', code: 'ME303', fac: 'Mr. K. Suresh' },
-      { p: 5, sub: 'Professional Elective – I', code: 'ME3XX', fac: 'Mr. K. Suresh' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Heat Transfer', code: 'ME303', fac: 'Mr. K. Suresh' },
-      { p: 2, sub: 'Dynamics of Machines', code: 'ME305', fac: 'Mr. K. Suresh' },
-      { p: 3, sub: 'Professional Elective – I', code: 'ME3XX', fac: 'Mr. K. Suresh' },
-      { p: 4, sub: 'Automobile Engineering', code: 'ME306', fac: 'Mr. K. Suresh' },
-      { p: 5, sub: 'Computer Integrated Manufacturing', code: 'ME307', fac: 'Mr. K. Suresh' },
-    ], lab: { sub: 'Dynamics Lab', code: 'ME305L', fac: 'Mr. K. Suresh' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Automobile Engineering', code: 'ME306', fac: 'Mr. K. Suresh' },
-      { p: 2, sub: 'Computer Integrated Manufacturing', code: 'ME307', fac: 'Mr. K. Suresh' },
-      { p: 3, sub: 'Dynamics of Machines', code: 'ME305', fac: 'Mr. K. Suresh' },
-      { p: 4, sub: 'Professional Elective – I', code: 'ME3XX', fac: 'Mr. K. Suresh' },
-      { p: 5, sub: 'Heat Transfer', code: 'ME303', fac: 'Mr. K. Suresh' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Computer Integrated Manufacturing', code: 'ME307', fac: 'Mr. K. Suresh' },
-      { p: 2, sub: 'Professional Elective – I', code: 'ME3XX', fac: 'Mr. K. Suresh' },
-      { p: 3, sub: 'Heat Transfer', code: 'ME303', fac: 'Mr. K. Suresh' },
-      { p: 4, sub: 'Dynamics of Machines', code: 'ME305', fac: 'Mr. K. Suresh' },
-      { p: 5, sub: 'Automobile Engineering', code: 'ME306', fac: 'Mr. K. Suresh' },
-    ], lab: { sub: 'Automobile Lab', code: 'ME306L', fac: 'Mr. K. Suresh' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Dynamics of Machines', code: 'ME305', fac: 'Mr. K. Suresh' },
-      { p: 2, sub: 'Automobile Engineering', code: 'ME306', fac: 'Mr. K. Suresh' },
-      { p: 3, sub: 'Computer Integrated Manufacturing', code: 'ME307', fac: 'Mr. K. Suresh' },
-      { p: 4, sub: 'Heat Transfer', code: 'ME303', fac: 'Mr. K. Suresh' },
-      { p: 5, sub: 'Professional Elective – I', code: 'ME3XX', fac: 'Mr. K. Suresh' },
-    ] },
-  ])
+  return makeWeek(
+    'Mech-101',
+    [
+      { sub: 'Refrigeration & Air Conditioning', code: 'ME601PC', fac: 'Mr. K. Suresh' },
+      { sub: 'Finite Element Analysis', code: 'ME602PC', fac: 'Mr. K. Suresh' },
+      { sub: 'Business Economics & Financial Analysis', code: 'MS603HS', fac: 'Mrs. N. Lavanya' },
+      { sub: 'Professional Elective - II', code: 'PE-II', fac: 'Mr. K. Suresh' },
+      { sub: 'Open Elective - II', code: 'OE-II', fac: 'Mr. K. Suresh' },
+    ],
+    {
+      1: { sub: 'RAC Lab', code: 'ME604PC', fac: 'Mr. K. Suresh' },
+      3: { sub: 'FEA Lab', code: 'ME605PC', fac: 'Mr. K. Suresh' },
+      4: { sub: 'Data Visualization', code: 'ME606SD', fac: 'Mr. K. Suresh' },
+      5: { sub: 'English for Employability Skills Lab', code: 'EN607HS', fac: 'Mr. V. Ravi Kumar' },
+    },
+    {
+      2: { 5: { sub: 'Environmental Science', code: 'VA600ES', fac: 'Mrs. N. Lavanya' } },
+    }
+  )
 }
 
 // ============================================================================
-//  YEAR IV — SEMESTER I (BRANCH-SPECIFIC)
+//  YEAR IV — SEMESTER I (JNTUH R25)
 // ============================================================================
 
 function yearIVSemICSE(): SlotDraft[] {
-  return buildWeek('CSE-301', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Machine Learning', code: 'CS401', fac: 'Dr. R. Kiran' },
-      { p: 2, sub: 'Cloud Computing', code: 'CS402', fac: 'Dr. A. Ramesh' },
-      { p: 3, sub: 'Blockchain Technology', code: 'CS403', fac: 'Mrs. S. Priya' },
-      { p: 4, sub: 'Professional Elective – II', code: 'CS4XX', fac: 'Mr. T. Vijay' },
-      { p: 5, sub: 'Seminar + Project Work – I', code: 'CS491', fac: 'Dr. A. Ramesh' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Blockchain Technology', code: 'CS403', fac: 'Mrs. S. Priya' },
-      { p: 2, sub: 'Machine Learning', code: 'CS401', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Professional Elective – II', code: 'CS4XX', fac: 'Mr. T. Vijay' },
-      { p: 4, sub: 'Cloud Computing', code: 'CS402', fac: 'Dr. A. Ramesh' },
-      { p: 5, sub: 'Seminar + Project Work – I', code: 'CS491', fac: 'Dr. A. Ramesh' },
-    ], lab: { sub: 'Project Work – I', code: 'CS491', fac: 'Dr. A. Ramesh' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Cloud Computing', code: 'CS402', fac: 'Dr. A. Ramesh' },
-      { p: 2, sub: 'Professional Elective – II', code: 'CS4XX', fac: 'Mr. T. Vijay' },
-      { p: 3, sub: 'Machine Learning', code: 'CS401', fac: 'Dr. R. Kiran' },
-      { p: 4, sub: 'Blockchain Technology', code: 'CS403', fac: 'Mrs. S. Priya' },
-      { p: 5, sub: 'Seminar + Project Work – I', code: 'CS491', fac: 'Dr. A. Ramesh' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Professional Elective – II', code: 'CS4XX', fac: 'Mr. T. Vijay' },
-      { p: 2, sub: 'Seminar + Project Work – I', code: 'CS491', fac: 'Dr. A. Ramesh' },
-      { p: 3, sub: 'Cloud Computing', code: 'CS402', fac: 'Dr. A. Ramesh' },
-      { p: 4, sub: 'Machine Learning', code: 'CS401', fac: 'Dr. R. Kiran' },
-      { p: 5, sub: 'Blockchain Technology', code: 'CS403', fac: 'Mrs. S. Priya' },
-    ], lab: { sub: 'Project Work – I', code: 'CS491', fac: 'Dr. A. Ramesh' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Seminar + Project Work – I', code: 'CS491', fac: 'Dr. A. Ramesh' },
-      { p: 2, sub: 'Machine Learning', code: 'CS401', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Cloud Computing', code: 'CS402', fac: 'Dr. A. Ramesh' },
-      { p: 4, sub: 'Blockchain Technology', code: 'CS403', fac: 'Mrs. S. Priya' },
-      { p: 5, sub: 'Professional Elective – II', code: 'CS4XX', fac: 'Mr. T. Vijay' },
-    ] },
-  ])
+  return makeWeek(
+    'CSE-301',
+    [
+      { sub: 'Natural Language Processing', code: 'CS701PC', fac: 'Dr. R. Kiran' },
+      { sub: 'Cyber Security', code: 'CS702PC', fac: 'Mrs. S. Priya' },
+      { sub: 'Fundamentals of Management', code: 'MS703HS', fac: 'Mrs. N. Lavanya' },
+      { sub: 'Professional Elective - III', code: 'PE-III', fac: 'Dr. A. Ramesh' },
+      { sub: 'Professional Elective - IV', code: 'PE-IV', fac: 'Mr. T. Vijay' },
+    ],
+    {
+      1: { sub: 'NLP Lab', code: 'CS704PC', fac: 'Dr. R. Kiran' },
+      3: { sub: 'Cyber Security Lab', code: 'CS705PC', fac: 'Mrs. S. Priya' },
+      4: { sub: 'Industry Oriented Mini Project/Internship', code: 'CS706PC', fac: 'Dr. A. Ramesh' },
+    },
+    {
+      5: { 5: { sub: 'Open Elective - III', code: 'OE-III', fac: 'Mrs. S. Priya' } },
+    }
+  )
 }
 
-function yearIVSemICSEAIML(): SlotDraft[] {
-  return buildWeek('CSE-AIML-401', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Machine Learning', code: 'AIML401', fac: 'Dr. R. Kiran' },
-      { p: 2, sub: 'Cloud Computing', code: 'CS402', fac: 'Dr. A. Ramesh' },
-      { p: 3, sub: 'Blockchain Technology', code: 'CS403', fac: 'Mrs. S. Priya' },
-      { p: 4, sub: 'Professional Elective – II', code: 'AIML4XX', fac: 'Dr. R. Kiran' },
-      { p: 5, sub: 'Seminar + Project Work – I', code: 'AIML491', fac: 'Dr. R. Kiran' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Blockchain Technology', code: 'CS403', fac: 'Mrs. S. Priya' },
-      { p: 2, sub: 'Machine Learning', code: 'AIML401', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Professional Elective – II', code: 'AIML4XX', fac: 'Dr. R. Kiran' },
-      { p: 4, sub: 'Cloud Computing', code: 'CS402', fac: 'Dr. A. Ramesh' },
-      { p: 5, sub: 'Seminar + Project Work – I', code: 'AIML491', fac: 'Dr. R. Kiran' },
-    ], lab: { sub: 'Project Work – I', code: 'AIML491', fac: 'Dr. R. Kiran' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Cloud Computing', code: 'CS402', fac: 'Dr. A. Ramesh' },
-      { p: 2, sub: 'Professional Elective – II', code: 'AIML4XX', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Machine Learning', code: 'AIML401', fac: 'Dr. R. Kiran' },
-      { p: 4, sub: 'Blockchain Technology', code: 'CS403', fac: 'Mrs. S. Priya' },
-      { p: 5, sub: 'Seminar + Project Work – I', code: 'AIML491', fac: 'Dr. R. Kiran' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Professional Elective – II', code: 'AIML4XX', fac: 'Dr. R. Kiran' },
-      { p: 2, sub: 'Seminar + Project Work – I', code: 'AIML491', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Cloud Computing', code: 'CS402', fac: 'Dr. A. Ramesh' },
-      { p: 4, sub: 'Machine Learning', code: 'AIML401', fac: 'Dr. R. Kiran' },
-      { p: 5, sub: 'Blockchain Technology', code: 'CS403', fac: 'Mrs. S. Priya' },
-    ], lab: { sub: 'Project Work – I', code: 'AIML491', fac: 'Dr. R. Kiran' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Seminar + Project Work – I', code: 'AIML491', fac: 'Dr. R. Kiran' },
-      { p: 2, sub: 'Machine Learning', code: 'AIML401', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Cloud Computing', code: 'CS402', fac: 'Dr. A. Ramesh' },
-      { p: 4, sub: 'Blockchain Technology', code: 'CS403', fac: 'Mrs. S. Priya' },
-      { p: 5, sub: 'Professional Elective – II', code: 'AIML4XX', fac: 'Dr. R. Kiran' },
-    ] },
-  ])
-}
-
-function yearIVSemICSECSBS(): SlotDraft[] {
-  return buildWeek('CSE-CSBS-402', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Machine Learning', code: 'CS401', fac: 'Dr. R. Kiran' },
-      { p: 2, sub: 'Cloud Computing', code: 'CS402', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'Financial Analytics', code: 'CSBS401', fac: 'Mrs. N. Lavanya' },
-      { p: 4, sub: 'Professional Elective – II', code: 'CSBS4XX', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Seminar + Project Work – I', code: 'CSBS491', fac: 'Dr. Hema Latha' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Financial Analytics', code: 'CSBS401', fac: 'Mrs. N. Lavanya' },
-      { p: 2, sub: 'Machine Learning', code: 'CS401', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Professional Elective – II', code: 'CSBS4XX', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'Cloud Computing', code: 'CS402', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Seminar + Project Work – I', code: 'CSBS491', fac: 'Dr. Hema Latha' },
-    ], lab: { sub: 'Project Work – I', code: 'CSBS491', fac: 'Dr. Hema Latha' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Cloud Computing', code: 'CS402', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Professional Elective – II', code: 'CSBS4XX', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'Machine Learning', code: 'CS401', fac: 'Dr. R. Kiran' },
-      { p: 4, sub: 'Financial Analytics', code: 'CSBS401', fac: 'Mrs. N. Lavanya' },
-      { p: 5, sub: 'Seminar + Project Work – I', code: 'CSBS491', fac: 'Dr. Hema Latha' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Professional Elective – II', code: 'CSBS4XX', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Seminar + Project Work – I', code: 'CSBS491', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'Cloud Computing', code: 'CS402', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'Machine Learning', code: 'CS401', fac: 'Dr. R. Kiran' },
-      { p: 5, sub: 'Financial Analytics', code: 'CSBS401', fac: 'Mrs. N. Lavanya' },
-    ], lab: { sub: 'Project Work – I', code: 'CSBS491', fac: 'Dr. Hema Latha' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Seminar + Project Work – I', code: 'CSBS491', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Machine Learning', code: 'CS401', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Cloud Computing', code: 'CS402', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'Financial Analytics', code: 'CSBS401', fac: 'Mrs. N. Lavanya' },
-      { p: 5, sub: 'Professional Elective – II', code: 'CSBS4XX', fac: 'Dr. Hema Latha' },
-    ] },
-  ])
-}
-
-function yearIVSemICSEDS(): SlotDraft[] {
-  return buildWeek('CSE-DS-403', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Machine Learning', code: 'AIML401', fac: 'Dr. R. Kiran' },
-      { p: 2, sub: 'Cloud Computing', code: 'CS402', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'Data Engineering', code: 'DS401', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'Professional Elective – II', code: 'DS4XX', fac: 'Dr. R. Kiran' },
-      { p: 5, sub: 'Seminar + Project Work – I', code: 'DS491', fac: 'Dr. R. Kiran' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Data Engineering', code: 'DS401', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Machine Learning', code: 'AIML401', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Professional Elective – II', code: 'DS4XX', fac: 'Dr. R. Kiran' },
-      { p: 4, sub: 'Cloud Computing', code: 'CS402', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Seminar + Project Work – I', code: 'DS491', fac: 'Dr. R. Kiran' },
-    ], lab: { sub: 'Project Work – I', code: 'DS491', fac: 'Dr. R. Kiran' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Cloud Computing', code: 'CS402', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Professional Elective – II', code: 'DS4XX', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Machine Learning', code: 'AIML401', fac: 'Dr. R. Kiran' },
-      { p: 4, sub: 'Data Engineering', code: 'DS401', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Seminar + Project Work – I', code: 'DS491', fac: 'Dr. R. Kiran' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Professional Elective – II', code: 'DS4XX', fac: 'Dr. R. Kiran' },
-      { p: 2, sub: 'Seminar + Project Work – I', code: 'DS491', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Cloud Computing', code: 'CS402', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'Machine Learning', code: 'AIML401', fac: 'Dr. R. Kiran' },
-      { p: 5, sub: 'Data Engineering', code: 'DS401', fac: 'Dr. Hema Latha' },
-    ], lab: { sub: 'Project Work – I', code: 'DS491', fac: 'Dr. R. Kiran' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Seminar + Project Work – I', code: 'DS491', fac: 'Dr. R. Kiran' },
-      { p: 2, sub: 'Machine Learning', code: 'AIML401', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Cloud Computing', code: 'CS402', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'Data Engineering', code: 'DS401', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Professional Elective – II', code: 'DS4XX', fac: 'Dr. R. Kiran' },
-    ] },
-  ])
-}
-
-function yearIVSemIECE(): SlotDraft[] {
-  return buildWeek('ECE-201', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Embedded Systems', code: 'EC401', fac: 'Dr. G. Narsimha' },
-      { p: 2, sub: 'IoT', code: 'EC402', fac: 'Mrs. R. Sujatha' },
-      { p: 3, sub: '5G Technology', code: 'EC403', fac: 'Dr. G. Narsimha' },
-      { p: 4, sub: 'Professional Elective – II', code: 'EC4XX', fac: 'Mrs. R. Sujatha' },
-      { p: 5, sub: 'Seminar + Project Work – I', code: 'EC491', fac: 'Dr. G. Narsimha' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: '5G Technology', code: 'EC403', fac: 'Dr. G. Narsimha' },
-      { p: 2, sub: 'Embedded Systems', code: 'EC401', fac: 'Dr. G. Narsimha' },
-      { p: 3, sub: 'Professional Elective – II', code: 'EC4XX', fac: 'Mrs. R. Sujatha' },
-      { p: 4, sub: 'IoT', code: 'EC402', fac: 'Mrs. R. Sujatha' },
-      { p: 5, sub: 'Seminar + Project Work – I', code: 'EC491', fac: 'Dr. G. Narsimha' },
-    ], lab: { sub: 'IoT Lab', code: 'EC402L', fac: 'Mrs. R. Sujatha' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'IoT', code: 'EC402', fac: 'Mrs. R. Sujatha' },
-      { p: 2, sub: 'Professional Elective – II', code: 'EC4XX', fac: 'Mrs. R. Sujatha' },
-      { p: 3, sub: 'Embedded Systems', code: 'EC401', fac: 'Dr. G. Narsimha' },
-      { p: 4, sub: '5G Technology', code: 'EC403', fac: 'Dr. G. Narsimha' },
-      { p: 5, sub: 'Seminar + Project Work – I', code: 'EC491', fac: 'Dr. G. Narsimha' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Professional Elective – II', code: 'EC4XX', fac: 'Mrs. R. Sujatha' },
-      { p: 2, sub: 'Seminar + Project Work – I', code: 'EC491', fac: 'Dr. G. Narsimha' },
-      { p: 3, sub: '5G Technology', code: 'EC403', fac: 'Dr. G. Narsimha' },
-      { p: 4, sub: 'Embedded Systems', code: 'EC401', fac: 'Dr. G. Narsimha' },
-      { p: 5, sub: 'IoT', code: 'EC402', fac: 'Mrs. R. Sujatha' },
-    ], lab: { sub: 'Embedded Systems Lab', code: 'EC401L', fac: 'Dr. G. Narsimha' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Seminar + Project Work – I', code: 'EC491', fac: 'Dr. G. Narsimha' },
-      { p: 2, sub: 'Embedded Systems', code: 'EC401', fac: 'Dr. G. Narsimha' },
-      { p: 3, sub: 'IoT', code: 'EC402', fac: 'Mrs. R. Sujatha' },
-      { p: 4, sub: '5G Technology', code: 'EC403', fac: 'Dr. G. Narsimha' },
-      { p: 5, sub: 'Professional Elective – II', code: 'EC4XX', fac: 'Mrs. R. Sujatha' },
-    ] },
-  ])
-}
-
-function yearIVSemIEEEEEE(): SlotDraft[] {
-  return buildWeek('EEE-101', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Power Electronics', code: 'EE401', fac: 'Mr. P. Ravi Teja' },
-      { p: 2, sub: 'Renewable Energy Systems', code: 'EE402', fac: 'Dr. S. Ranganath' },
-      { p: 3, sub: 'Electric Drives', code: 'EE403', fac: 'Mr. P. Ravi Teja' },
-      { p: 4, sub: 'Professional Elective – II', code: 'EE4XX', fac: 'Dr. S. Ranganath' },
-      { p: 5, sub: 'Seminar + Project Work – I', code: 'EE491', fac: 'Dr. S. Ranganath' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Electric Drives', code: 'EE403', fac: 'Mr. P. Ravi Teja' },
-      { p: 2, sub: 'Power Electronics', code: 'EE401', fac: 'Mr. P. Ravi Teja' },
-      { p: 3, sub: 'Professional Elective – II', code: 'EE4XX', fac: 'Dr. S. Ranganath' },
-      { p: 4, sub: 'Renewable Energy Systems', code: 'EE402', fac: 'Dr. S. Ranganath' },
-      { p: 5, sub: 'Seminar + Project Work – I', code: 'EE491', fac: 'Dr. S. Ranganath' },
-    ], lab: { sub: 'Power Electronics Lab', code: 'EE401L', fac: 'Mr. P. Ravi Teja' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Renewable Energy Systems', code: 'EE402', fac: 'Dr. S. Ranganath' },
-      { p: 2, sub: 'Professional Elective – II', code: 'EE4XX', fac: 'Dr. S. Ranganath' },
-      { p: 3, sub: 'Power Electronics', code: 'EE401', fac: 'Mr. P. Ravi Teja' },
-      { p: 4, sub: 'Electric Drives', code: 'EE403', fac: 'Mr. P. Ravi Teja' },
-      { p: 5, sub: 'Seminar + Project Work – I', code: 'EE491', fac: 'Dr. S. Ranganath' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Professional Elective – II', code: 'EE4XX', fac: 'Dr. S. Ranganath' },
-      { p: 2, sub: 'Seminar + Project Work – I', code: 'EE491', fac: 'Dr. S. Ranganath' },
-      { p: 3, sub: 'Electric Drives', code: 'EE403', fac: 'Mr. P. Ravi Teja' },
-      { p: 4, sub: 'Power Electronics', code: 'EE401', fac: 'Mr. P. Ravi Teja' },
-      { p: 5, sub: 'Renewable Energy Systems', code: 'EE402', fac: 'Dr. S. Ranganath' },
-    ], lab: { sub: 'Electric Drives Lab', code: 'EE403L', fac: 'Mr. P. Ravi Teja' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Seminar + Project Work – I', code: 'EE491', fac: 'Dr. S. Ranganath' },
-      { p: 2, sub: 'Power Electronics', code: 'EE401', fac: 'Mr. P. Ravi Teja' },
-      { p: 3, sub: 'Renewable Energy Systems', code: 'EE402', fac: 'Dr. S. Ranganath' },
-      { p: 4, sub: 'Electric Drives', code: 'EE403', fac: 'Mr. P. Ravi Teja' },
-      { p: 5, sub: 'Professional Elective – II', code: 'EE4XX', fac: 'Dr. S. Ranganath' },
-    ] },
-  ])
-}
-
-function yearIVSemIIT(): SlotDraft[] {
-  return buildWeek('IT-301', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Cloud Computing', code: 'IT401', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'IoT', code: 'IT402', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'DevOps', code: 'IT403', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'Professional Elective – II', code: 'IT4XX', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Seminar + Project Work – I', code: 'IT491', fac: 'Dr. Hema Latha' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'DevOps', code: 'IT403', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Cloud Computing', code: 'IT401', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'Professional Elective – II', code: 'IT4XX', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'IoT', code: 'IT402', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Seminar + Project Work – I', code: 'IT491', fac: 'Dr. Hema Latha' },
-    ], lab: { sub: 'IoT Lab', code: 'IT402L', fac: 'Dr. Hema Latha' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'IoT', code: 'IT402', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Professional Elective – II', code: 'IT4XX', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'Cloud Computing', code: 'IT401', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'DevOps', code: 'IT403', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Seminar + Project Work – I', code: 'IT491', fac: 'Dr. Hema Latha' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Professional Elective – II', code: 'IT4XX', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Seminar + Project Work – I', code: 'IT491', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'DevOps', code: 'IT403', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'Cloud Computing', code: 'IT401', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'IoT', code: 'IT402', fac: 'Dr. Hema Latha' },
-    ], lab: { sub: 'DevOps Lab', code: 'IT403L', fac: 'Dr. Hema Latha' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Seminar + Project Work – I', code: 'IT491', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Cloud Computing', code: 'IT401', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'IoT', code: 'IT402', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'DevOps', code: 'IT403', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Professional Elective – II', code: 'IT4XX', fac: 'Dr. Hema Latha' },
-    ] },
-  ])
-}
-
-function yearIVSemICivil(): SlotDraft[] {
-  return buildWeek('Civil-201', [
-    { day: 1, periods: [
-      { p: 1, sub: 'RCC Design', code: 'CV401', fac: 'Dr. L. Mahesh' },
-      { p: 2, sub: 'Environmental Engineering', code: 'CV402', fac: 'Dr. L. Mahesh' },
-      { p: 3, sub: 'Estimation & Costing', code: 'CV403', fac: 'Dr. L. Mahesh' },
-      { p: 4, sub: 'Professional Elective – II', code: 'CV4XX', fac: 'Dr. L. Mahesh' },
-      { p: 5, sub: 'Seminar + Project Work – I', code: 'CV491', fac: 'Dr. L. Mahesh' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Estimation & Costing', code: 'CV403', fac: 'Dr. L. Mahesh' },
-      { p: 2, sub: 'RCC Design', code: 'CV401', fac: 'Dr. L. Mahesh' },
-      { p: 3, sub: 'Professional Elective – II', code: 'CV4XX', fac: 'Dr. L. Mahesh' },
-      { p: 4, sub: 'Environmental Engineering', code: 'CV402', fac: 'Dr. L. Mahesh' },
-      { p: 5, sub: 'Seminar + Project Work – I', code: 'CV491', fac: 'Dr. L. Mahesh' },
-    ], lab: { sub: 'RCC Design Lab', code: 'CV401L', fac: 'Dr. L. Mahesh' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Environmental Engineering', code: 'CV402', fac: 'Dr. L. Mahesh' },
-      { p: 2, sub: 'Professional Elective – II', code: 'CV4XX', fac: 'Dr. L. Mahesh' },
-      { p: 3, sub: 'RCC Design', code: 'CV401', fac: 'Dr. L. Mahesh' },
-      { p: 4, sub: 'Estimation & Costing', code: 'CV403', fac: 'Dr. L. Mahesh' },
-      { p: 5, sub: 'Seminar + Project Work – I', code: 'CV491', fac: 'Dr. L. Mahesh' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Professional Elective – II', code: 'CV4XX', fac: 'Dr. L. Mahesh' },
-      { p: 2, sub: 'Seminar + Project Work – I', code: 'CV491', fac: 'Dr. L. Mahesh' },
-      { p: 3, sub: 'Estimation & Costing', code: 'CV403', fac: 'Dr. L. Mahesh' },
-      { p: 4, sub: 'RCC Design', code: 'CV401', fac: 'Dr. L. Mahesh' },
-      { p: 5, sub: 'Environmental Engineering', code: 'CV402', fac: 'Dr. L. Mahesh' },
-    ], lab: { sub: 'Environmental Engineering Lab', code: 'CV402L', fac: 'Dr. L. Mahesh' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Seminar + Project Work – I', code: 'CV491', fac: 'Dr. L. Mahesh' },
-      { p: 2, sub: 'RCC Design', code: 'CV401', fac: 'Dr. L. Mahesh' },
-      { p: 3, sub: 'Environmental Engineering', code: 'CV402', fac: 'Dr. L. Mahesh' },
-      { p: 4, sub: 'Estimation & Costing', code: 'CV403', fac: 'Dr. L. Mahesh' },
-      { p: 5, sub: 'Professional Elective – II', code: 'CV4XX', fac: 'Dr. L. Mahesh' },
-    ] },
-  ])
-}
-
-function yearIVSemIMech(): SlotDraft[] {
-  return buildWeek('Mech-101', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Finite Element Analysis', code: 'ME401', fac: 'Mr. K. Suresh' },
-      { p: 2, sub: 'Refrigeration & AC', code: 'ME402', fac: 'Mr. K. Suresh' },
-      { p: 3, sub: 'Industrial Engineering', code: 'ME403', fac: 'Mr. K. Suresh' },
-      { p: 4, sub: 'Professional Elective – II', code: 'ME4XX', fac: 'Mr. K. Suresh' },
-      { p: 5, sub: 'Seminar + Project Work – I', code: 'ME491', fac: 'Mr. K. Suresh' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Industrial Engineering', code: 'ME403', fac: 'Mr. K. Suresh' },
-      { p: 2, sub: 'Finite Element Analysis', code: 'ME401', fac: 'Mr. K. Suresh' },
-      { p: 3, sub: 'Professional Elective – II', code: 'ME4XX', fac: 'Mr. K. Suresh' },
-      { p: 4, sub: 'Refrigeration & AC', code: 'ME402', fac: 'Mr. K. Suresh' },
-      { p: 5, sub: 'Seminar + Project Work – I', code: 'ME491', fac: 'Mr. K. Suresh' },
-    ], lab: { sub: 'FEA Lab', code: 'ME401L', fac: 'Mr. K. Suresh' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Refrigeration & AC', code: 'ME402', fac: 'Mr. K. Suresh' },
-      { p: 2, sub: 'Professional Elective – II', code: 'ME4XX', fac: 'Mr. K. Suresh' },
-      { p: 3, sub: 'Finite Element Analysis', code: 'ME401', fac: 'Mr. K. Suresh' },
-      { p: 4, sub: 'Industrial Engineering', code: 'ME403', fac: 'Mr. K. Suresh' },
-      { p: 5, sub: 'Seminar + Project Work – I', code: 'ME491', fac: 'Mr. K. Suresh' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Professional Elective – II', code: 'ME4XX', fac: 'Mr. K. Suresh' },
-      { p: 2, sub: 'Seminar + Project Work – I', code: 'ME491', fac: 'Mr. K. Suresh' },
-      { p: 3, sub: 'Industrial Engineering', code: 'ME403', fac: 'Mr. K. Suresh' },
-      { p: 4, sub: 'Finite Element Analysis', code: 'ME401', fac: 'Mr. K. Suresh' },
-      { p: 5, sub: 'Refrigeration & AC', code: 'ME402', fac: 'Mr. K. Suresh' },
-    ], lab: { sub: 'Refrigeration Lab', code: 'ME402L', fac: 'Mr. K. Suresh' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Seminar + Project Work – I', code: 'ME491', fac: 'Mr. K. Suresh' },
-      { p: 2, sub: 'Finite Element Analysis', code: 'ME401', fac: 'Mr. K. Suresh' },
-      { p: 3, sub: 'Refrigeration & AC', code: 'ME402', fac: 'Mr. K. Suresh' },
-      { p: 4, sub: 'Industrial Engineering', code: 'ME403', fac: 'Mr. K. Suresh' },
-      { p: 5, sub: 'Professional Elective – II', code: 'ME4XX', fac: 'Mr. K. Suresh' },
-    ] },
-  ])
-}
-
-// ============================================================================
-//  YEAR IV — SEMESTER II (PROJECT WORK + ELECTIVES, BRANCH-SPECIFIC)
-// ============================================================================
-
-function yearIVSemIICSE(): SlotDraft[] {
-  return buildWeek('CSE-301', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Project Work – II', code: 'CS492', fac: 'Dr. A. Ramesh' },
-      { p: 2, sub: 'Open Elective – I', code: 'OE401', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Professional Elective – III', code: 'CS5XX', fac: 'Mrs. S. Priya' },
-      { p: 4, sub: 'Professional Elective – IV', code: 'CS5YY', fac: 'Mr. T. Vijay' },
-      { p: 5, sub: 'Project Work – II', code: 'CS492', fac: 'Dr. A. Ramesh' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Open Elective – I', code: 'OE401', fac: 'Dr. R. Kiran' },
-      { p: 2, sub: 'Project Work – II', code: 'CS492', fac: 'Dr. A. Ramesh' },
-      { p: 3, sub: 'Professional Elective – IV', code: 'CS5YY', fac: 'Mr. T. Vijay' },
-      { p: 4, sub: 'Professional Elective – III', code: 'CS5XX', fac: 'Mrs. S. Priya' },
-      { p: 5, sub: 'Project Work – II', code: 'CS492', fac: 'Dr. A. Ramesh' },
-    ], lab: { sub: 'Project Work – II', code: 'CS492', fac: 'Dr. A. Ramesh' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Professional Elective – III', code: 'CS5XX', fac: 'Mrs. S. Priya' },
-      { p: 2, sub: 'Open Elective – I', code: 'OE401', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Project Work – II', code: 'CS492', fac: 'Dr. A. Ramesh' },
-      { p: 4, sub: 'Professional Elective – IV', code: 'CS5YY', fac: 'Mr. T. Vijay' },
-      { p: 5, sub: 'Project Work – II', code: 'CS492', fac: 'Dr. A. Ramesh' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Professional Elective – IV', code: 'CS5YY', fac: 'Mr. T. Vijay' },
-      { p: 2, sub: 'Project Work – II', code: 'CS492', fac: 'Dr. A. Ramesh' },
-      { p: 3, sub: 'Open Elective – I', code: 'OE401', fac: 'Dr. R. Kiran' },
-      { p: 4, sub: 'Professional Elective – III', code: 'CS5XX', fac: 'Mrs. S. Priya' },
-      { p: 5, sub: 'Project Work – II', code: 'CS492', fac: 'Dr. A. Ramesh' },
-    ], lab: { sub: 'Project Work – II', code: 'CS492', fac: 'Dr. A. Ramesh' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Project Work – II', code: 'CS492', fac: 'Dr. A. Ramesh' },
-      { p: 2, sub: 'Professional Elective – III', code: 'CS5XX', fac: 'Mrs. S. Priya' },
-      { p: 3, sub: 'Project Work – II', code: 'CS492', fac: 'Dr. A. Ramesh' },
-      { p: 4, sub: 'Open Elective – I', code: 'OE401', fac: 'Dr. R. Kiran' },
-      { p: 5, sub: 'Professional Elective – IV', code: 'CS5YY', fac: 'Mr. T. Vijay' },
-    ] },
-  ])
-}
-
-function yearIVSemIICSEAIML(): SlotDraft[] {
-  return buildWeek('CSE-AIML-401', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Project Work – II', code: 'AIML492', fac: 'Dr. R. Kiran' },
-      { p: 2, sub: 'Open Elective – I', code: 'OE401', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Professional Elective – III', code: 'AIML5XX', fac: 'Dr. R. Kiran' },
-      { p: 4, sub: 'Professional Elective – IV', code: 'AIML5YY', fac: 'Dr. R. Kiran' },
-      { p: 5, sub: 'Project Work – II', code: 'AIML492', fac: 'Dr. R. Kiran' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Open Elective – I', code: 'OE401', fac: 'Dr. R. Kiran' },
-      { p: 2, sub: 'Project Work – II', code: 'AIML492', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Professional Elective – IV', code: 'AIML5YY', fac: 'Dr. R. Kiran' },
-      { p: 4, sub: 'Professional Elective – III', code: 'AIML5XX', fac: 'Dr. R. Kiran' },
-      { p: 5, sub: 'Project Work – II', code: 'AIML492', fac: 'Dr. R. Kiran' },
-    ], lab: { sub: 'Project Work – II', code: 'AIML492', fac: 'Dr. R. Kiran' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Professional Elective – III', code: 'AIML5XX', fac: 'Dr. R. Kiran' },
-      { p: 2, sub: 'Open Elective – I', code: 'OE401', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Project Work – II', code: 'AIML492', fac: 'Dr. R. Kiran' },
-      { p: 4, sub: 'Professional Elective – IV', code: 'AIML5YY', fac: 'Dr. R. Kiran' },
-      { p: 5, sub: 'Project Work – II', code: 'AIML492', fac: 'Dr. R. Kiran' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Professional Elective – IV', code: 'AIML5YY', fac: 'Dr. R. Kiran' },
-      { p: 2, sub: 'Project Work – II', code: 'AIML492', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Open Elective – I', code: 'OE401', fac: 'Dr. R. Kiran' },
-      { p: 4, sub: 'Professional Elective – III', code: 'AIML5XX', fac: 'Dr. R. Kiran' },
-      { p: 5, sub: 'Project Work – II', code: 'AIML492', fac: 'Dr. R. Kiran' },
-    ], lab: { sub: 'Project Work – II', code: 'AIML492', fac: 'Dr. R. Kiran' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Project Work – II', code: 'AIML492', fac: 'Dr. R. Kiran' },
-      { p: 2, sub: 'Professional Elective – III', code: 'AIML5XX', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Project Work – II', code: 'AIML492', fac: 'Dr. R. Kiran' },
-      { p: 4, sub: 'Open Elective – I', code: 'OE401', fac: 'Dr. R. Kiran' },
-      { p: 5, sub: 'Professional Elective – IV', code: 'AIML5YY', fac: 'Dr. R. Kiran' },
-    ] },
-  ])
+function yearIVSemIUnitAimlDs(room: string): SlotDraft[] {
+  return makeWeek(
+    room,
+    [
+      { sub: 'Reinforcement Learning', code: 'AI701PC', fac: 'Dr. R. Kiran' },
+      { sub: 'Generative AI', code: 'AI702PC', fac: 'Dr. R. Kiran' },
+      { sub: 'Fundamentals of Management', code: 'MS703HS', fac: 'Mrs. N. Lavanya' },
+      { sub: 'Professional Elective - III', code: 'PE-III', fac: 'Dr. R. Kiran' },
+      { sub: 'Professional Elective - IV', code: 'PE-IV', fac: 'Dr. Hema Latha' },
+    ],
+    {
+      1: { sub: 'Reinforcement Learning Lab', code: 'AI704PC', fac: 'Dr. R. Kiran' },
+      3: { sub: 'Generative AI Lab', code: 'AI705PC', fac: 'Dr. R. Kiran' },
+      4: { sub: 'Industry Oriented Mini Project/Internship', code: 'AI706PC', fac: 'Dr. Hema Latha' },
+    },
+    {
+      5: { 5: { sub: 'Open Elective - III', code: 'OE-III', fac: 'Dr. Hema Latha' } },
+    }
+  )
 }
 
 function yearIVSemIICSECSBS(): SlotDraft[] {
-  return buildWeek('CSE-CSBS-402', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Project Work – II', code: 'CSBS492', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Open Elective – I', code: 'OE401', fac: 'Mrs. N. Lavanya' },
-      { p: 3, sub: 'Professional Elective – III', code: 'CSBS5XX', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'Professional Elective – IV', code: 'CSBS5YY', fac: 'Mrs. N. Lavanya' },
-      { p: 5, sub: 'Project Work – II', code: 'CSBS492', fac: 'Dr. Hema Latha' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Open Elective – I', code: 'OE401', fac: 'Mrs. N. Lavanya' },
-      { p: 2, sub: 'Project Work – II', code: 'CSBS492', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'Professional Elective – IV', code: 'CSBS5YY', fac: 'Mrs. N. Lavanya' },
-      { p: 4, sub: 'Professional Elective – III', code: 'CSBS5XX', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Project Work – II', code: 'CSBS492', fac: 'Dr. Hema Latha' },
-    ], lab: { sub: 'Project Work – II', code: 'CSBS492', fac: 'Dr. Hema Latha' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Professional Elective – III', code: 'CSBS5XX', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Open Elective – I', code: 'OE401', fac: 'Mrs. N. Lavanya' },
-      { p: 3, sub: 'Project Work – II', code: 'CSBS492', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'Professional Elective – IV', code: 'CSBS5YY', fac: 'Mrs. N. Lavanya' },
-      { p: 5, sub: 'Project Work – II', code: 'CSBS492', fac: 'Dr. Hema Latha' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Professional Elective – IV', code: 'CSBS5YY', fac: 'Mrs. N. Lavanya' },
-      { p: 2, sub: 'Project Work – II', code: 'CSBS492', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'Open Elective – I', code: 'OE401', fac: 'Mrs. N. Lavanya' },
-      { p: 4, sub: 'Professional Elective – III', code: 'CSBS5XX', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Project Work – II', code: 'CSBS492', fac: 'Dr. Hema Latha' },
-    ], lab: { sub: 'Project Work – II', code: 'CSBS492', fac: 'Dr. Hema Latha' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Project Work – II', code: 'CSBS492', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Professional Elective – III', code: 'CSBS5XX', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'Project Work – II', code: 'CSBS492', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'Open Elective – I', code: 'OE401', fac: 'Mrs. N. Lavanya' },
-      { p: 5, sub: 'Professional Elective – IV', code: 'CSBS5YY', fac: 'Mrs. N. Lavanya' },
-    ] },
-  ])
+  return makeWeek(
+    'CSE-CSBS-402',
+    [
+      { sub: 'DevOps', code: 'CB701PC', fac: 'Mrs. S. Priya' },
+      { sub: 'Cloud Computing', code: 'CB702PC', fac: 'Dr. Hema Latha' },
+      { sub: 'Fundamentals of Management', code: 'MS703HS', fac: 'Mrs. N. Lavanya' },
+      { sub: 'Professional Elective - III', code: 'PE-III', fac: 'Dr. R. Kiran' },
+      { sub: 'Professional Elective - IV', code: 'PE-IV', fac: 'Dr. Hema Latha' },
+    ],
+    {
+      1: { sub: 'Cloud Computing Lab', code: 'CB704PC', fac: 'Dr. Hema Latha' },
+      3: { sub: 'DevOps Lab', code: 'CB705PC', fac: 'Mrs. S. Priya' },
+      4: { sub: 'Industry Oriented Mini Project/Internship', code: 'CB706PC', fac: 'Dr. Hema Latha' },
+    },
+    {
+      5: { 5: { sub: 'Open Elective - III', code: 'OE-III', fac: 'Mrs. N. Lavanya' } },
+    }
+  )
+}
+
+function yearIVSemIIT(): SlotDraft[] {
+  return makeWeek(
+    'IT-301',
+    [
+      { sub: 'Information Security', code: 'CI701PC', fac: 'Dr. Hema Latha' },
+      { sub: 'Deep Learning', code: 'CI702PC', fac: 'Dr. R. Kiran' },
+      { sub: 'Fundamentals of Management', code: 'MS703HS', fac: 'Mrs. N. Lavanya' },
+      { sub: 'Professional Elective - III', code: 'PE-III', fac: 'Dr. Hema Latha' },
+      { sub: 'Professional Elective - IV', code: 'PE-IV', fac: 'Dr. R. Kiran' },
+    ],
+    {
+      1: { sub: 'Information Security Lab', code: 'CI704PC', fac: 'Dr. Hema Latha' },
+      3: { sub: 'Deep Learning Lab', code: 'CI705PC', fac: 'Dr. R. Kiran' },
+      4: { sub: 'Industry Oriented Mini Project/Internship', code: 'CI706PC', fac: 'Dr. Hema Latha' },
+    },
+    {
+      5: { 5: { sub: 'Open Elective - III', code: 'OE-III', fac: 'Dr. R. Kiran' } },
+    }
+  )
+}
+
+function yearIVSemIECE(): SlotDraft[] {
+  return makeWeek(
+    'ECE-201',
+    [
+      { sub: 'Wireless Communication', code: 'EC701PC', fac: 'Dr. G. Narsimha' },
+      { sub: 'Neural Networks & Deep Learning', code: 'EC702PC', fac: 'Dr. R. Kiran' },
+      { sub: 'Fundamentals of Management', code: 'MS703HS', fac: 'Mrs. N. Lavanya' },
+      { sub: 'Professional Elective - III', code: 'PE-III', fac: 'Mrs. R. Sujatha' },
+      { sub: 'Professional Elective - IV', code: 'PE-IV', fac: 'Dr. G. Narsimha' },
+    ],
+    {
+      1: { sub: 'Wireless Communication Lab', code: 'EC704PC', fac: 'Dr. G. Narsimha' },
+      3: { sub: 'NLP/Deep Learning Lab', code: 'EC705PC', fac: 'Dr. R. Kiran' },
+      4: { sub: 'Industry Oriented Mini Project/Internship', code: 'EC706PC', fac: 'Mrs. R. Sujatha' },
+    },
+    {
+      5: { 5: { sub: 'Open Elective - III', code: 'OE-III', fac: 'Mrs. R. Sujatha' } },
+    }
+  )
+}
+
+function yearIVSemIEEEEEE(): SlotDraft[] {
+  return makeWeek(
+    'EEE-101',
+    [
+      { sub: 'Smart Metering & Communication Protocols', code: 'EE701PC', fac: 'Dr. S. Ranganath' },
+      { sub: 'EV Charging Infrastructure', code: 'EE702PC', fac: 'Mr. P. Ravi Teja' },
+      { sub: 'Fundamentals of Management', code: 'MS703HS', fac: 'Mrs. N. Lavanya' },
+      { sub: 'Professional Elective - III', code: 'PE-III', fac: 'Dr. S. Ranganath' },
+      { sub: 'Professional Elective - IV', code: 'PE-IV', fac: 'Mr. P. Ravi Teja' },
+    ],
+    {
+      1: { sub: 'Smart Grid Lab', code: 'EE704PC', fac: 'Dr. S. Ranganath' },
+      3: { sub: 'EV Lab', code: 'EE705PC', fac: 'Mr. P. Ravi Teja' },
+      4: { sub: 'Industry Oriented Mini Project/Internship', code: 'EE706PC', fac: 'Dr. S. Ranganath' },
+    },
+    {
+      5: { 5: { sub: 'Open Elective - III', code: 'OE-III', fac: 'Mr. P. Ravi Teja' } },
+    }
+  )
+}
+
+function yearIVSemICivil(): SlotDraft[] {
+  return makeWeek(
+    'Civil-201',
+    [
+      { sub: 'Infrastructure Development', code: 'CV701PC', fac: 'Dr. L. Mahesh' },
+      { sub: 'Construction Management', code: 'CV702PC', fac: 'Dr. L. Mahesh' },
+      { sub: 'Fundamentals of Management', code: 'MS703HS', fac: 'Mrs. N. Lavanya' },
+      { sub: 'Professional Elective - III', code: 'PE-III', fac: 'Dr. L. Mahesh' },
+      { sub: 'Professional Elective - IV', code: 'PE-IV', fac: 'Dr. L. Mahesh' },
+    ],
+    {
+      1: { sub: 'Infrastructure Lab', code: 'CV704PC', fac: 'Dr. L. Mahesh' },
+      3: { sub: 'Construction Management Lab', code: 'CV705PC', fac: 'Dr. L. Mahesh' },
+      4: { sub: 'Industry Oriented Mini Project/Internship', code: 'CV706PC', fac: 'Dr. L. Mahesh' },
+    },
+    {
+      5: { 5: { sub: 'Open Elective - III', code: 'OE-III', fac: 'Dr. L. Mahesh' } },
+    }
+  )
+}
+
+function yearIVSemIMech(): SlotDraft[] {
+  return makeWeek(
+    'Mech-101',
+    [
+      { sub: 'Industrial Engineering', code: 'ME701PC', fac: 'Mr. K. Suresh' },
+      { sub: 'Composite Materials', code: 'ME702PC', fac: 'Mr. K. Suresh' },
+      { sub: 'Fundamentals of Management', code: 'MS703HS', fac: 'Mrs. N. Lavanya' },
+      { sub: 'Professional Elective - III', code: 'PE-III', fac: 'Mr. K. Suresh' },
+      { sub: 'Professional Elective - IV', code: 'PE-IV', fac: 'Mr. K. Suresh' },
+    ],
+    {
+      1: { sub: 'Industrial Engineering Lab', code: 'ME704PC', fac: 'Mr. K. Suresh' },
+      3: { sub: 'Composite Materials Lab', code: 'ME705PC', fac: 'Mr. K. Suresh' },
+      4: { sub: 'Industry Oriented Mini Project/Internship', code: 'ME706PC', fac: 'Mr. K. Suresh' },
+    },
+    {
+      5: { 5: { sub: 'Open Elective - III', code: 'OE-III', fac: 'Mr. K. Suresh' } },
+    }
+  )
+}
+
+// ============================================================================
+//  YEAR IV — SEMESTER II (PROJECT WORK + ELECTIVES, JNTUH R25)
+// ============================================================================
+
+function projectSemester(room: string, pwCode: string, pwFac: string, peVFac: string, peVIFac: string): SlotDraft[] {
+  const pw: Sub = { sub: 'Project Work', code: pwCode, fac: pwFac }
+  const peV: Sub = { sub: 'Professional Elective - V', code: 'PE-V', fac: peVFac }
+  const peVI: Sub = { sub: 'Professional Elective - VI', code: 'PE-VI', fac: peVIFac }
+  return makeWeek(room, [pw, peV, pw, peVI, pw], { 1: pw, 3: pw })
+}
+
+function yearIVSemIICSE(): SlotDraft[] {
+  return projectSemester('CSE-301', 'CS801PC', 'Dr. A. Ramesh', 'Dr. A. Ramesh', 'Mr. T. Vijay')
+}
+
+function yearIVSemIICSEAIML(): SlotDraft[] {
+  return projectSemester('CSE-AIML-401', 'AI801PC', 'Dr. R. Kiran', 'Dr. R. Kiran', 'Dr. Hema Latha')
 }
 
 function yearIVSemIICSEDS(): SlotDraft[] {
-  return buildWeek('CSE-DS-403', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Project Work – II', code: 'DS492', fac: 'Dr. R. Kiran' },
-      { p: 2, sub: 'Open Elective – I', code: 'OE401', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'Professional Elective – III', code: 'DS5XX', fac: 'Dr. R. Kiran' },
-      { p: 4, sub: 'Professional Elective – IV', code: 'DS5YY', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Project Work – II', code: 'DS492', fac: 'Dr. R. Kiran' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Open Elective – I', code: 'OE401', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Project Work – II', code: 'DS492', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Professional Elective – IV', code: 'DS5YY', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'Professional Elective – III', code: 'DS5XX', fac: 'Dr. R. Kiran' },
-      { p: 5, sub: 'Project Work – II', code: 'DS492', fac: 'Dr. R. Kiran' },
-    ], lab: { sub: 'Project Work – II', code: 'DS492', fac: 'Dr. R. Kiran' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Professional Elective – III', code: 'DS5XX', fac: 'Dr. R. Kiran' },
-      { p: 2, sub: 'Open Elective – I', code: 'OE401', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'Project Work – II', code: 'DS492', fac: 'Dr. R. Kiran' },
-      { p: 4, sub: 'Professional Elective – IV', code: 'DS5YY', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Project Work – II', code: 'DS492', fac: 'Dr. R. Kiran' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Professional Elective – IV', code: 'DS5YY', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Project Work – II', code: 'DS492', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Open Elective – I', code: 'OE401', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'Professional Elective – III', code: 'DS5XX', fac: 'Dr. R. Kiran' },
-      { p: 5, sub: 'Project Work – II', code: 'DS492', fac: 'Dr. R. Kiran' },
-    ], lab: { sub: 'Project Work – II', code: 'DS492', fac: 'Dr. R. Kiran' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Project Work – II', code: 'DS492', fac: 'Dr. R. Kiran' },
-      { p: 2, sub: 'Professional Elective – III', code: 'DS5XX', fac: 'Dr. R. Kiran' },
-      { p: 3, sub: 'Project Work – II', code: 'DS492', fac: 'Dr. R. Kiran' },
-      { p: 4, sub: 'Open Elective – I', code: 'OE401', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Professional Elective – IV', code: 'DS5YY', fac: 'Dr. Hema Latha' },
-    ] },
-  ])
+  return projectSemester('CSE-DS-403', 'AI801PC', 'Dr. R. Kiran', 'Dr. R. Kiran', 'Dr. Hema Latha')
 }
 
-function yearIVSemIIECE(): SlotDraft[] {
-  return buildWeek('ECE-201', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Project Work – II', code: 'EC492', fac: 'Dr. G. Narsimha' },
-      { p: 2, sub: 'Open Elective – I', code: 'OE401', fac: 'Mrs. R. Sujatha' },
-      { p: 3, sub: 'Professional Elective – III', code: 'EC5XX', fac: 'Dr. G. Narsimha' },
-      { p: 4, sub: 'Professional Elective – IV', code: 'EC5YY', fac: 'Mrs. R. Sujatha' },
-      { p: 5, sub: 'Project Work – II', code: 'EC492', fac: 'Dr. G. Narsimha' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Open Elective – I', code: 'OE401', fac: 'Mrs. R. Sujatha' },
-      { p: 2, sub: 'Project Work – II', code: 'EC492', fac: 'Dr. G. Narsimha' },
-      { p: 3, sub: 'Professional Elective – IV', code: 'EC5YY', fac: 'Mrs. R. Sujatha' },
-      { p: 4, sub: 'Professional Elective – III', code: 'EC5XX', fac: 'Dr. G. Narsimha' },
-      { p: 5, sub: 'Project Work – II', code: 'EC492', fac: 'Dr. G. Narsimha' },
-    ], lab: { sub: 'Project Work – II', code: 'EC492', fac: 'Dr. G. Narsimha' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Professional Elective – III', code: 'EC5XX', fac: 'Dr. G. Narsimha' },
-      { p: 2, sub: 'Open Elective – I', code: 'OE401', fac: 'Mrs. R. Sujatha' },
-      { p: 3, sub: 'Project Work – II', code: 'EC492', fac: 'Dr. G. Narsimha' },
-      { p: 4, sub: 'Professional Elective – IV', code: 'EC5YY', fac: 'Mrs. R. Sujatha' },
-      { p: 5, sub: 'Project Work – II', code: 'EC492', fac: 'Dr. G. Narsimha' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Professional Elective – IV', code: 'EC5YY', fac: 'Mrs. R. Sujatha' },
-      { p: 2, sub: 'Project Work – II', code: 'EC492', fac: 'Dr. G. Narsimha' },
-      { p: 3, sub: 'Open Elective – I', code: 'OE401', fac: 'Mrs. R. Sujatha' },
-      { p: 4, sub: 'Professional Elective – III', code: 'EC5XX', fac: 'Dr. G. Narsimha' },
-      { p: 5, sub: 'Project Work – II', code: 'EC492', fac: 'Dr. G. Narsimha' },
-    ], lab: { sub: 'Project Work – II', code: 'EC492', fac: 'Dr. G. Narsimha' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Project Work – II', code: 'EC492', fac: 'Dr. G. Narsimha' },
-      { p: 2, sub: 'Professional Elective – III', code: 'EC5XX', fac: 'Dr. G. Narsimha' },
-      { p: 3, sub: 'Project Work – II', code: 'EC492', fac: 'Dr. G. Narsimha' },
-      { p: 4, sub: 'Open Elective – I', code: 'OE401', fac: 'Mrs. R. Sujatha' },
-      { p: 5, sub: 'Professional Elective – IV', code: 'EC5YY', fac: 'Mrs. R. Sujatha' },
-    ] },
-  ])
-}
-
-function yearIVSemIIEEEEEE(): SlotDraft[] {
-  return buildWeek('EEE-101', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Project Work – II', code: 'EE492', fac: 'Dr. S. Ranganath' },
-      { p: 2, sub: 'Open Elective – I', code: 'OE401', fac: 'Mr. P. Ravi Teja' },
-      { p: 3, sub: 'Professional Elective – III', code: 'EE5XX', fac: 'Dr. S. Ranganath' },
-      { p: 4, sub: 'Professional Elective – IV', code: 'EE5YY', fac: 'Mr. P. Ravi Teja' },
-      { p: 5, sub: 'Project Work – II', code: 'EE492', fac: 'Dr. S. Ranganath' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Open Elective – I', code: 'OE401', fac: 'Mr. P. Ravi Teja' },
-      { p: 2, sub: 'Project Work – II', code: 'EE492', fac: 'Dr. S. Ranganath' },
-      { p: 3, sub: 'Professional Elective – IV', code: 'EE5YY', fac: 'Mr. P. Ravi Teja' },
-      { p: 4, sub: 'Professional Elective – III', code: 'EE5XX', fac: 'Dr. S. Ranganath' },
-      { p: 5, sub: 'Project Work – II', code: 'EE492', fac: 'Dr. S. Ranganath' },
-    ], lab: { sub: 'Project Work – II', code: 'EE492', fac: 'Dr. S. Ranganath' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Professional Elective – III', code: 'EE5XX', fac: 'Dr. S. Ranganath' },
-      { p: 2, sub: 'Open Elective – I', code: 'OE401', fac: 'Mr. P. Ravi Teja' },
-      { p: 3, sub: 'Project Work – II', code: 'EE492', fac: 'Dr. S. Ranganath' },
-      { p: 4, sub: 'Professional Elective – IV', code: 'EE5YY', fac: 'Mr. P. Ravi Teja' },
-      { p: 5, sub: 'Project Work – II', code: 'EE492', fac: 'Dr. S. Ranganath' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Professional Elective – IV', code: 'EE5YY', fac: 'Mr. P. Ravi Teja' },
-      { p: 2, sub: 'Project Work – II', code: 'EE492', fac: 'Dr. S. Ranganath' },
-      { p: 3, sub: 'Open Elective – I', code: 'OE401', fac: 'Mr. P. Ravi Teja' },
-      { p: 4, sub: 'Professional Elective – III', code: 'EE5XX', fac: 'Dr. S. Ranganath' },
-      { p: 5, sub: 'Project Work – II', code: 'EE492', fac: 'Dr. S. Ranganath' },
-    ], lab: { sub: 'Project Work – II', code: 'EE492', fac: 'Dr. S. Ranganath' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Project Work – II', code: 'EE492', fac: 'Dr. S. Ranganath' },
-      { p: 2, sub: 'Professional Elective – III', code: 'EE5XX', fac: 'Dr. S. Ranganath' },
-      { p: 3, sub: 'Project Work – II', code: 'EE492', fac: 'Dr. S. Ranganath' },
-      { p: 4, sub: 'Open Elective – I', code: 'OE401', fac: 'Mr. P. Ravi Teja' },
-      { p: 5, sub: 'Professional Elective – IV', code: 'EE5YY', fac: 'Mr. P. Ravi Teja' },
-    ] },
-  ])
+function yearIVSemIICSECSBS(): SlotDraft[] {
+  return projectSemester('CSE-CSBS-402', 'CB801PC', 'Dr. Hema Latha', 'Dr. Hema Latha', 'Mrs. N. Lavanya')
 }
 
 function yearIVSemIIIT(): SlotDraft[] {
-  return buildWeek('IT-301', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Project Work – II', code: 'IT492', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Open Elective – I', code: 'OE401', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'Professional Elective – III', code: 'IT5XX', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'Professional Elective – IV', code: 'IT5YY', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Project Work – II', code: 'IT492', fac: 'Dr. Hema Latha' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Open Elective – I', code: 'OE401', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Project Work – II', code: 'IT492', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'Professional Elective – IV', code: 'IT5YY', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'Professional Elective – III', code: 'IT5XX', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Project Work – II', code: 'IT492', fac: 'Dr. Hema Latha' },
-    ], lab: { sub: 'Project Work – II', code: 'IT492', fac: 'Dr. Hema Latha' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Professional Elective – III', code: 'IT5XX', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Open Elective – I', code: 'OE401', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'Project Work – II', code: 'IT492', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'Professional Elective – IV', code: 'IT5YY', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Project Work – II', code: 'IT492', fac: 'Dr. Hema Latha' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Professional Elective – IV', code: 'IT5YY', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Project Work – II', code: 'IT492', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'Open Elective – I', code: 'OE401', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'Professional Elective – III', code: 'IT5XX', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Project Work – II', code: 'IT492', fac: 'Dr. Hema Latha' },
-    ], lab: { sub: 'Project Work – II', code: 'IT492', fac: 'Dr. Hema Latha' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Project Work – II', code: 'IT492', fac: 'Dr. Hema Latha' },
-      { p: 2, sub: 'Professional Elective – III', code: 'IT5XX', fac: 'Dr. Hema Latha' },
-      { p: 3, sub: 'Project Work – II', code: 'IT492', fac: 'Dr. Hema Latha' },
-      { p: 4, sub: 'Open Elective – I', code: 'OE401', fac: 'Dr. Hema Latha' },
-      { p: 5, sub: 'Professional Elective – IV', code: 'IT5YY', fac: 'Dr. Hema Latha' },
-    ] },
-  ])
+  return projectSemester('IT-301', 'CI801PC', 'Dr. Hema Latha', 'Dr. Hema Latha', 'Dr. R. Kiran')
+}
+
+function yearIVSemIIECE(): SlotDraft[] {
+  return projectSemester('ECE-201', 'EC801PC', 'Dr. G. Narsimha', 'Dr. G. Narsimha', 'Mrs. R. Sujatha')
+}
+
+function yearIVSemIIEEEEEE(): SlotDraft[] {
+  return projectSemester('EEE-101', 'EE801PC', 'Dr. S. Ranganath', 'Dr. S. Ranganath', 'Mr. P. Ravi Teja')
 }
 
 function yearIVSemIICivil(): SlotDraft[] {
-  return buildWeek('Civil-201', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Project Work – II', code: 'CV492', fac: 'Dr. L. Mahesh' },
-      { p: 2, sub: 'Open Elective – I', code: 'OE401', fac: 'Dr. L. Mahesh' },
-      { p: 3, sub: 'Professional Elective – III', code: 'CV5XX', fac: 'Dr. L. Mahesh' },
-      { p: 4, sub: 'Professional Elective – IV', code: 'CV5YY', fac: 'Dr. L. Mahesh' },
-      { p: 5, sub: 'Project Work – II', code: 'CV492', fac: 'Dr. L. Mahesh' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Open Elective – I', code: 'OE401', fac: 'Dr. L. Mahesh' },
-      { p: 2, sub: 'Project Work – II', code: 'CV492', fac: 'Dr. L. Mahesh' },
-      { p: 3, sub: 'Professional Elective – IV', code: 'CV5YY', fac: 'Dr. L. Mahesh' },
-      { p: 4, sub: 'Professional Elective – III', code: 'CV5XX', fac: 'Dr. L. Mahesh' },
-      { p: 5, sub: 'Project Work – II', code: 'CV492', fac: 'Dr. L. Mahesh' },
-    ], lab: { sub: 'Project Work – II', code: 'CV492', fac: 'Dr. L. Mahesh' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Professional Elective – III', code: 'CV5XX', fac: 'Dr. L. Mahesh' },
-      { p: 2, sub: 'Open Elective – I', code: 'OE401', fac: 'Dr. L. Mahesh' },
-      { p: 3, sub: 'Project Work – II', code: 'CV492', fac: 'Dr. L. Mahesh' },
-      { p: 4, sub: 'Professional Elective – IV', code: 'CV5YY', fac: 'Dr. L. Mahesh' },
-      { p: 5, sub: 'Project Work – II', code: 'CV492', fac: 'Dr. L. Mahesh' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Professional Elective – IV', code: 'CV5YY', fac: 'Dr. L. Mahesh' },
-      { p: 2, sub: 'Project Work – II', code: 'CV492', fac: 'Dr. L. Mahesh' },
-      { p: 3, sub: 'Open Elective – I', code: 'OE401', fac: 'Dr. L. Mahesh' },
-      { p: 4, sub: 'Professional Elective – III', code: 'CV5XX', fac: 'Dr. L. Mahesh' },
-      { p: 5, sub: 'Project Work – II', code: 'CV492', fac: 'Dr. L. Mahesh' },
-    ], lab: { sub: 'Project Work – II', code: 'CV492', fac: 'Dr. L. Mahesh' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Project Work – II', code: 'CV492', fac: 'Dr. L. Mahesh' },
-      { p: 2, sub: 'Professional Elective – III', code: 'CV5XX', fac: 'Dr. L. Mahesh' },
-      { p: 3, sub: 'Project Work – II', code: 'CV492', fac: 'Dr. L. Mahesh' },
-      { p: 4, sub: 'Open Elective – I', code: 'OE401', fac: 'Dr. L. Mahesh' },
-      { p: 5, sub: 'Professional Elective – IV', code: 'CV5YY', fac: 'Dr. L. Mahesh' },
-    ] },
-  ])
+  return projectSemester('Civil-201', 'CV801PC', 'Dr. L. Mahesh', 'Dr. L. Mahesh', 'Dr. L. Mahesh')
 }
 
 function yearIVSemIIMech(): SlotDraft[] {
-  return buildWeek('Mech-101', [
-    { day: 1, periods: [
-      { p: 1, sub: 'Project Work – II', code: 'ME492', fac: 'Mr. K. Suresh' },
-      { p: 2, sub: 'Open Elective – I', code: 'OE401', fac: 'Mr. K. Suresh' },
-      { p: 3, sub: 'Professional Elective – III', code: 'ME5XX', fac: 'Mr. K. Suresh' },
-      { p: 4, sub: 'Professional Elective – IV', code: 'ME5YY', fac: 'Mr. K. Suresh' },
-      { p: 5, sub: 'Project Work – II', code: 'ME492', fac: 'Mr. K. Suresh' },
-    ] },
-    { day: 2, periods: [
-      { p: 1, sub: 'Open Elective – I', code: 'OE401', fac: 'Mr. K. Suresh' },
-      { p: 2, sub: 'Project Work – II', code: 'ME492', fac: 'Mr. K. Suresh' },
-      { p: 3, sub: 'Professional Elective – IV', code: 'ME5YY', fac: 'Mr. K. Suresh' },
-      { p: 4, sub: 'Professional Elective – III', code: 'ME5XX', fac: 'Mr. K. Suresh' },
-      { p: 5, sub: 'Project Work – II', code: 'ME492', fac: 'Mr. K. Suresh' },
-    ], lab: { sub: 'Project Work – II', code: 'ME492', fac: 'Mr. K. Suresh' } },
-    { day: 3, periods: [
-      { p: 1, sub: 'Professional Elective – III', code: 'ME5XX', fac: 'Mr. K. Suresh' },
-      { p: 2, sub: 'Open Elective – I', code: 'OE401', fac: 'Mr. K. Suresh' },
-      { p: 3, sub: 'Project Work – II', code: 'ME492', fac: 'Mr. K. Suresh' },
-      { p: 4, sub: 'Professional Elective – IV', code: 'ME5YY', fac: 'Mr. K. Suresh' },
-      { p: 5, sub: 'Project Work – II', code: 'ME492', fac: 'Mr. K. Suresh' },
-    ] },
-    { day: 4, periods: [
-      { p: 1, sub: 'Professional Elective – IV', code: 'ME5YY', fac: 'Mr. K. Suresh' },
-      { p: 2, sub: 'Project Work – II', code: 'ME492', fac: 'Mr. K. Suresh' },
-      { p: 3, sub: 'Open Elective – I', code: 'OE401', fac: 'Mr. K. Suresh' },
-      { p: 4, sub: 'Professional Elective – III', code: 'ME5XX', fac: 'Mr. K. Suresh' },
-      { p: 5, sub: 'Project Work – II', code: 'ME492', fac: 'Mr. K. Suresh' },
-    ], lab: { sub: 'Project Work – II', code: 'ME492', fac: 'Mr. K. Suresh' } },
-    { day: 5, periods: [
-      { p: 1, sub: 'Project Work – II', code: 'ME492', fac: 'Mr. K. Suresh' },
-      { p: 2, sub: 'Professional Elective – III', code: 'ME5XX', fac: 'Mr. K. Suresh' },
-      { p: 3, sub: 'Project Work – II', code: 'ME492', fac: 'Mr. K. Suresh' },
-      { p: 4, sub: 'Open Elective – I', code: 'OE401', fac: 'Mr. K. Suresh' },
-      { p: 5, sub: 'Professional Elective – IV', code: 'ME5YY', fac: 'Mr. K. Suresh' },
-    ] },
-  ])
+  return projectSemester('Mech-101', 'ME801PC', 'Mr. K. Suresh', 'Mr. K. Suresh', 'Mr. K. Suresh')
 }
 
 // ============================================================================
@@ -2235,17 +1157,27 @@ function timetableForKey(year: YearKeys, semester: SemesterKeys, branch: string)
     if (si === 1) {
       switch (br) {
         case 'CSE': return yearIISemICSE()
-        case 'CSE-AIML': return yearIISemICSEAIML()
-        case 'CSE-CSBS': return yearIISemICSECSBS()
-        case 'CSE-DS': return yearIISemICSEDS()
+        case 'CSE-AIML': return yearIISemIUnitAimlDs('CSE-AIML-401')
+        case 'CSE-CSBS': return yearIISemIICSECSBS()
+        case 'CSE-DS': return yearIISemIUnitAimlDs('CSE-DS-403')
         case 'IT': return yearIISemIIT()
         case 'ECE': return yearIISemIECE()
-        case 'EEE': return yearIISemIEEEEE()
+        case 'EEE': return yearIISemIEEEEEE()
         case 'Civil': return yearIISemICivil()
         case 'Mechanical': return yearIISemIMech()
       }
     }
-    return yearIISemII(br)
+    switch (br) {
+      case 'CSE': return yearIISemIIUnitCseDs('CSE-301')
+      case 'CSE-AIML': return yearIISemIICSEAIML()
+      case 'CSE-CSBS': return yearIISemIICSECSBS()
+      case 'CSE-DS': return yearIISemIIUnitCseDs('CSE-DS-403')
+      case 'IT': return yearIISemIIIT()
+      case 'ECE': return yearIISemIIECE()
+      case 'EEE': return yearIISemIIEEEEEE()
+      case 'Civil': return yearIISemIICivil()
+      case 'Mechanical': return yearIISemIIMech()
+    }
   }
 
   // Year III
@@ -2253,9 +1185,9 @@ function timetableForKey(year: YearKeys, semester: SemesterKeys, branch: string)
     if (si === 1) {
       switch (br) {
         case 'CSE': return yearIIISemICSE()
-        case 'CSE-AIML': return yearIIISemICSEAIML()
-        case 'CSE-CSBS': return yearIIISemICSECSBS()
-        case 'CSE-DS': return yearIIISemICSEDS()
+        case 'CSE-AIML': return yearIIISemIUnitAimlDs('CSE-AIML-401')
+        case 'CSE-CSBS': return yearIIISemIICSECSBS()
+        case 'CSE-DS': return yearIIISemIUnitAimlDs('CSE-DS-403')
         case 'IT': return yearIIISemIIT()
         case 'ECE': return yearIIISemIECE()
         case 'EEE': return yearIIISemIEEEEEE()
@@ -2265,9 +1197,9 @@ function timetableForKey(year: YearKeys, semester: SemesterKeys, branch: string)
     }
     switch (br) {
       case 'CSE': return yearIIISemIICSE()
-      case 'CSE-AIML': return yearIIISemIICSEAIML()
+      case 'CSE-AIML': return yearIIISemIIUnitAimlDs('CSE-AIML-401')
       case 'CSE-CSBS': return yearIIISemIICSECSBS()
-      case 'CSE-DS': return yearIIISemIICSEDS()
+      case 'CSE-DS': return yearIIISemIIUnitAimlDs('CSE-DS-403')
       case 'IT': return yearIIISemIIIT()
       case 'ECE': return yearIIISemIIECE()
       case 'EEE': return yearIIISemIIEEEEEE()
@@ -2280,9 +1212,9 @@ function timetableForKey(year: YearKeys, semester: SemesterKeys, branch: string)
   if (si === 1) {
     switch (br) {
       case 'CSE': return yearIVSemICSE()
-      case 'CSE-AIML': return yearIVSemICSEAIML()
-      case 'CSE-CSBS': return yearIVSemICSECSBS()
-      case 'CSE-DS': return yearIVSemICSEDS()
+      case 'CSE-AIML': return yearIVSemIUnitAimlDs('CSE-AIML-401')
+      case 'CSE-CSBS': return yearIVSemIICSECSBS()
+      case 'CSE-DS': return yearIVSemIUnitAimlDs('CSE-DS-403')
       case 'IT': return yearIVSemIIT()
       case 'ECE': return yearIVSemIECE()
       case 'EEE': return yearIVSemIEEEEEE()
