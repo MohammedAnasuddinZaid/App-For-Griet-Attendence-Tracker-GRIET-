@@ -2,6 +2,7 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { Home, CalendarDays, CalendarRange, BarChart3, Settings, BookOpenCheck, Sparkles, ScrollText, WifiOff } from 'lucide-react'
 import { useApp } from '@/context/AppContext'
 import { cn } from '@/utils/cn'
+import { GRIET_COLLEGE_INFO } from '@/data/constants'
 
 const NAV = [
   { to: '/', label: 'Home', icon: Home, end: true },
@@ -35,7 +36,7 @@ export function Layout() {
           <div className="size-9 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold">G</div>
           <div>
             <p className="font-bold text-sm leading-tight">GRIET Attendance</p>
-            <p className="text-[11px] text-slate-400">Student-built utility</p>
+            <p className="text-[11px] text-slate-400">Est. {GRIET_COLLEGE_INFO.established} · Bachupally</p>
           </div>
         </div>
         <nav className="mt-8 flex-1 space-y-1">
@@ -56,6 +57,9 @@ export function Layout() {
             </button>
           )}
         </div>
+        <div className="mt-3 px-2 text-[10px] leading-relaxed text-slate-400">
+          Founded by Late Shri Gokaraju Rangaraju
+        </div>
       </aside>
 
       {/* Mobile top header */}
@@ -65,7 +69,10 @@ export function Layout() {
             <div className="size-8 rounded-lg bg-brand-600 flex items-center justify-center text-white font-bold text-sm">G</div>
             <div>
               <p className="font-bold text-sm leading-tight tracking-tight">GRIET Attendance</p>
-              {profile && <p className="text-[10px] text-slate-400 leading-tight truncate max-w-[140px]">{profile.name} · {profile.year} {profile.section}</p>}
+              {profile
+                ? <p className="text-[10px] text-slate-400 leading-tight truncate max-w-[140px]">{profile.name} · {profile.year} {profile.section}</p>
+                : <p className="text-[10px] text-slate-400 leading-tight">Est. {GRIET_COLLEGE_INFO.established} · Bachupally</p>
+              }
             </div>
           </div>
           <div className="flex items-center gap-1">

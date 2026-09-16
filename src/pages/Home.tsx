@@ -238,7 +238,7 @@ export default function HomePage() {
       )}
 
       <p className="text-[11px] text-slate-400 dark:text-slate-500 text-center pb-2">
-        Attendance metrics are app-generated planning indicators, not official GRIET records.
+        Attendance metrics are app-generated planning indicators, not official GRIET records. GRIET — Est. 1997, Bachupally.
       </p>
     </div>
   )

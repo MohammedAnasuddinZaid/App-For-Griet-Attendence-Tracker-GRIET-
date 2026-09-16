@@ -3,16 +3,42 @@ import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, Check, GraduationCap, ShieldCheck, Sparkles, User } from 'lucide-react'
 import { useApp } from '@/context/AppContext'
 import { Button, useToast } from '@/components/ui'
-import { GRIET_BRANCHES, YEARS, SEMESTERS, ACADEMIC_YEARS, DEFAULT_SECTIONS } from '@/data/constants'
-import { saveProfile, ensureDefaultSettings, bulkSaveCalendarEvents, clearCalendarSource } from '@/services/dataService'
+import { GRIET_BRANCHES, YEARS, SEMESTERS, ACADEMIC_YEARS, DEFAULT_SECTIONS, GRIET_FOUNDERS } from '@/data/constants'
+import { saveProfile, ensureDefaultSettings, bulkSaveCalendarEvents, clearCalendarSource, saveTimetable, bulkSaveSlots, getActiveTimetable } from '@/services/dataService'
 import { getGrietSeedEvents } from '@/data/grietCalendar'
 import { getTelanganaHolidaySeedEvents } from '@/data/telanganaCalendar'
+import { getGrietTimetable } from '@/data/grietTimetables'
 import { currentAcademicSemester } from '@/utils/date'
 import { uid } from '@/utils'
-import type { StudentProfile } from '@/types'
+import type { StudentProfile, Timetable, TimetableSlot } from '@/types'
 import { cn } from '@/utils/cn'
 
 const STEPS = ['Welcome', 'Your name', 'Year', 'Branch', 'Section', 'Term', 'Review']
+
+async function seedTimetable(profile: StudentProfile) {
+  const existing = await getActiveTimetable(profile.id)
+  if (existing) return
+  const drafts = getGrietTimetable(profile.year, profile.semester, profile.branch)
+  if (!drafts || drafts.length === 0) return
+  const now = new Date().toISOString()
+  const tt: Timetable = {
+    id: uid('tt'),
+    profileId: profile.id,
+    name: `${profile.year} B.Tech ${profile.branch} · Sem ${profile.semester}`,
+    isActive: true,
+    createdAt: now,
+    updatedAt: now
+  }
+  await saveTimetable(tt)
+  const slots: TimetableSlot[] = drafts.map((s) => ({
+    ...s,
+    id: uid('slot'),
+    timetableId: tt.id,
+    createdAt: now,
+    updatedAt: now
+  }))
+  await bulkSaveSlots(slots)
+}
 
 export default function SetupPage() {
   const { setProfile, setTheme, profiles } = useApp()
@@ -66,6 +92,10 @@ export default function SetupPage() {
       await saveProfile(profile)
       await ensureDefaultSettings(profile.id)
 
+      // Auto-load a GRIET timetable for this class if one exists. Saves typing —
+      // students can edit or replace it later in the Timetable page.
+      await seedTimetable(profile)
+
       // Seed academic calendar for this year + semester (idempotent, deduped).
       await clearCalendarSource('GRIET_ACADEMIC_CALENDAR')
       await bulkSaveCalendarEvents(getGrietSeedEvents(year, semester))
@@ -114,6 +144,8 @@ export default function SetupPage() {
                   <li className="flex items-start gap-2.5"><GraduationCap size={16} className="mt-0.5 shrink-0 text-brand-500" aria-hidden /><span>GRIET academic calendar + Telangana holiday candidates, verified by you.</span></li>
                   <li className="flex items-start gap-2.5"><ShieldCheck size={16} className="mt-0.5 shrink-0 text-brand-500" aria-hidden /><span>100% offline-first. Everything stays on this device.</span></li>
                 </ul>
+                <p className="text-xs text-slate-500 dark:text-slate-400">For GRIET students — based on the official GRIET academic calendar.</p>
+                <p className="text-[11px] text-slate-400">Founded by {GRIET_FOUNDERS[0].name} · {GRIET_FOUNDERS[1].role} {GRIET_FOUNDERS[1].name}</p>
                 {profiles.length > 0 && (
                   <button
                     type="button"
@@ -277,7 +309,7 @@ export default function SetupPage() {
                   ))}
                 </dl>
                 <p className="text-xs leading-relaxed text-slate-400">
-                  This is a student-built, independent tool. It is <strong>not</strong> an official GRIET service. All data is stored only on this device.
+                  This is a student-built independent tool — not an official GRIET service. GRIET was founded by {GRIET_FOUNDERS[0].name} and is led by {GRIET_FOUNDERS[1].role} {GRIET_FOUNDERS[1].name}. All data stays on this device.
                 </p>
               </div>
             )}
@@ -300,7 +332,7 @@ export default function SetupPage() {
         </div>
 
         <p className="mt-4 text-center text-[11px] text-slate-400">
-          Built by Mohammed Anasuddin Zaid — not affiliated with or endorsed by GRIET.
+          Built by Mohammed Anasuddin Zaid · Not affiliated with or endorsed by GRIET
         </p>
       </div>
     </div>

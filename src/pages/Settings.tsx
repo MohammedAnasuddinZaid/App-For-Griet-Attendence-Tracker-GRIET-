@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Settings, Download, Trash2, Moon, Sun, Monitor, Shield, Bell, BellRing, HardDrive, User, Clock, CheckCircle2, Target } from 'lucide-react'
+import { Settings, Download, Trash2, Moon, Sun, Monitor, Shield, Bell, BellRing, HardDrive, User, Clock, CheckCircle2, Target, Info, ExternalLink } from 'lucide-react'
 import { useApp } from '@/context/AppContext'
 import { Button, Card, Badge, EmptyState, useToast, ConfirmDialog } from '@/components/ui'
 import {
@@ -10,7 +10,7 @@ import { getGrietSeedEvents } from '@/data/grietCalendar'
 import { getTelanganaHolidaySeedEvents } from '@/data/telanganaCalendar'
 import { requestNotificationPermission, sendTestNotification } from '@/services/notifications'
 import { db } from '@/db'
-import { GRIET_BRANCHES } from '@/data/constants'
+import { GRIET_BRANCHES, GRIET_COLLEGE_INFO, GRIET_FOUNDERS, APP_BUILDER } from '@/data/constants'
 import { cn } from '@/utils/cn'
 import type { BackupData, StudentProfile } from '@/types'
 
@@ -227,6 +227,35 @@ export default function SettingsPage() {
           <p className="text-lg font-bold tabular-nums text-brand-600 dark:text-brand-400 w-16 text-right">{settings.attendanceTarget}%</p>
         </div>
         <p className="text-[11px] text-slate-400">This is your personal planning indicator, not an official GRIET minimum.</p>
+      </Section>
+
+      {/* About GRIET */}
+      <Section icon={<Info size={18} />} title="About GRIET" description={`${GRIET_COLLEGE_INFO.name} (${GRIET_COLLEGE_INFO.shortName})`}>
+        <div className="space-y-3">
+          <div className="rounded-xl bg-slate-50 dark:bg-slate-800/60 px-4 py-3 space-y-2 text-sm">
+            <p className="text-slate-600 dark:text-slate-300">{GRIET_COLLEGE_INFO.name}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">{GRIET_COLLEGE_INFO.location}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Affiliated to {GRIET_COLLEGE_INFO.affiliatedTo}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Established {GRIET_COLLEGE_INFO.established}</p>
+          </div>
+          {GRIET_FOUNDERS.map((f) => (
+            <div key={f.name} className="rounded-xl bg-slate-50 dark:bg-slate-800/60 px-4 py-3">
+              <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">{f.name}</p>
+              <p className="text-xs text-brand-600 dark:text-brand-400 font-medium">{f.role}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{f.description}</p>
+            </div>
+          ))}
+          <div className="rounded-xl bg-slate-50 dark:bg-slate-800/60 px-4 py-3">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Built by {APP_BUILDER.name} ({APP_BUILDER.role})
+            </p>
+            <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">{APP_BUILDER.note}</p>
+          </div>
+          <a href={GRIET_COLLEGE_INFO.website} target="_blank" rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-brand-600 dark:text-brand-400 hover:underline">
+            Visit GRIET website <ExternalLink size={12} aria-hidden />
+          </a>
+        </div>
       </Section>
 
       {/* Notifications */}
